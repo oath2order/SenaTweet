@@ -1,5 +1,5 @@
 //api params
-var senEndpoint = "115/Senate/members";
+var senEndpoint = "members";
 var senURL = "https://api.propublica.org/congress/v1/";
 var senList   = {
   "async": true,
@@ -17,7 +17,7 @@ senObject = {};
 //If only first name is given will return the last matching senator it finds. Will only return one senator at present
 $("#search-button").on("click", function(e) {
   var searchArr = $("#searchbar").val().split(" ");
-  senList.url = senURL + senEndpoint + ".json";
+  senList.url = senURL + "115/Senate/" + senEndpoint + ".json";
   $.ajax(senList).done(function (response) {
     var senMem = response.results[0].members;
     //runs through list checking each senator and producing an object based on first name and last name if included
@@ -25,14 +25,24 @@ $("#search-button").on("click", function(e) {
       if(senMem[i].first_name == searchArr[0]){
         if(searchArr[1] != undefined){
           if(senMem[i].last_name == searchArr[1]){
-            senObject = senMem[i];
+            senId = senMem[i].id;
         }
       }
       else{
-        senObject = senMem[i];
+        senId = senMem[i].id;
       }
     }
     });
-    console.log(senObject);
+    produceSen(senId);
   });
 });
+
+function produceSen(senId){
+  senList.url = senURL + senEndpoint + "/" + senId + ".json";
+  $.ajax(senList).done(function (response) {
+    senObject = response;
+    console.log(senList.url);
+    console.log(senObject);
+  });
+
+}
