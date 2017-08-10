@@ -14,8 +14,11 @@
 <body>
   <div class="container main-content">
     <div class="form-group">
-      <label for="searchbar">Enter State (Short form)</label>
-      <input type="email" class="form-control" id="searchbar" placeholder='"MA", not "Massachusetts"'>
+      <div class="input-group-btn">
+        <button class="btn btn-default" id="search-by-name">Search By Name</button>
+        <button class="btn btn-default" id="search-by-state">Search By State</button>
+      </div>
+      <input type="text" class="form-control" id="searchbar" placeholder=''>
       <button type="submit" class="btn btn-default" id="search-button">Submit</button>
     </div>
   </div>
