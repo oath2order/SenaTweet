@@ -15,10 +15,28 @@
   <div class="container main-content">
     <div class="form-group">
       <div class="input-group-btn">
-        <button class="btn btn-default" id="search-by-name">Search By Name</button>
-        <button class="btn btn-default" id="search-by-state">Search By State</button>
+        <button class="btn btn-default search-by-name" id="name-button">Search By Name</button>
+        <button class="btn btn-default search-by-state" id="states-button">Search By State</button>
       </div>
-      <input type="text" class="form-control" id="searchbar" placeholder=''>
+      <div class="input-group search-by-name" id="first-name">
+        <span class="input-group-addon">First Name</span>
+        <input type="text" class="form-control" id="first-name-bar" placeholder='John'>
+      </div>
+      <div class="input-group search-by-name" id="last-name">
+        <span class="input-group-addon">Last Name</span>
+        <input type="text" class="form-control" id="last-name-bar" placeholder='Smith'>
+      </div>
+      <div class="dropdown search-by-state" id="states">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          States
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" id="states-menu" aria-labelledby="dropdownMenu1">
+          <li><a href="#">Action</a></li>
+          <li><a href="#">Another action</a></li>
+          <li><a href="#">Something else here</a></li>
+        </ul>
+      </div>
       <button type="submit" class="btn btn-default" id="search-button">Submit</button>
     </div>
   </div>
