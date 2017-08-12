@@ -3,8 +3,8 @@
 var searchMethod = {
 
   //all the variables are kept on top
-  firstName: "genevieve",
-  lastName: "applebottom",
+  firstName: "",
+  lastName: "",
   senURL: "https://api.propublica.org/congress/v1/",
   senList: {
     "async": true,
@@ -40,20 +40,22 @@ var searchMethod = {
     $("#states").show();
   },
 
-  //function for input validation, kept separate so that it can be called when needed, this needs to work flawlessly in order for everything else to happen
+  //function for input validation, kept separate so that it can be called when needed, I'm using alerts for now just to test functionality, someone PLEASE replace them with modals like they're supposed to be (see below)
   inputValidation: function(input) {
     if (input !== "") {
       if (/^[a-zA-Z]+/.test(input)) {
         return input;
       } else {
-        console.log("invalid");
+        alert("invalid");
       }
-    } else {
-      return "";
+    } else if ($("input").val() == "") {
+      //someone PLEASE change this
+      alert("your field is empty, please type something");
     }
   },
 
-  // function for our search by name search type, this particular function ended up being huge; I'm using alerts for now just to test functionality, someone PLEASE replace them with modals like they're supposed to be (see below)
+  //these are the functions for our search types, the search by name function ended up being huge;
+
   searchByName: function() {
     this.firstName = this.inputValidation($("#first-name-bar").val());
     this.lastName = this.inputValidation($("#last-name-bar").val());
@@ -64,36 +66,20 @@ var searchMethod = {
         $.each(senMem, function(i) {
           if (senMem[i].first_name == searchMethod.firstName) {
             searchMethod.senIdArr.push(senMem[i].id);
-          } else{
-            //someone PLEASE replace this
-            alert("your search did not yield any results");
-            return false;
           }
         });
       } else if (searchMethod.lastName !== "" && searchMethod.firstName == "") {
         $.each(senMem, function(i) {
           if (senMem[i].last_name == searchMethod.lastName) {
             searchMethod.senIdArr.push(senMem[i].id);
-          } else{
-            //someone PLEASE replace this
-            alert("your search did not yield any results");
-            return false;
           }
         });
       } else if (searchMethod.firstName !== "" && searchMethod.lastName !== "") {
         $.each(senMem, function(i) {
           if (senMem[i].first_name == searchMethod.firstName && senMem[i].last_name == searchMethod.lastName) {
             searchMethod.senIdArr.push(senMem[i].id);
-          } else{
-            //someone PLEASE replace this
-            alert("your search did not yield any results");
-            return false;
           }
         });
-      } else if (searchMethod.firstName == "" && searchMethod.lastName == "") {
-        //someone PLEASE replace this
-        alert("please enter a name");
-        return false;
       }
     });
   },
