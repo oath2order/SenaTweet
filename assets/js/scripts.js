@@ -1,10 +1,10 @@
-//searchMethod is the object in which all the variables and functions for our search bar, search types, and submit button are held
+//searchMethod is the object in which all the variables and functions for our search bar, search types, and submit button are held; one major problem is that all the id and class identifiers are interspersed throught the method rather than defined up top within a bunch of variables, so when it comes time to integrate this into the rest of the project someone will have to go through and replace every single tag with the correct one, either here or in the html file
 
 var searchMethod = {
 
   //all the variables are kept on top
-  firstName: "",
-  lastName: "",
+  firstName: "genevieve",
+  lastName: "applebottom",
   senURL: "https://api.propublica.org/congress/v1/",
   senList: {
     "async": true,
@@ -23,8 +23,6 @@ var searchMethod = {
 
   state: "",
 
-  valid: false,
-
   //there are functions added for every button for every search type we are doing
   activateNameButton: function(button) {
     $("button").removeClass("active");
@@ -42,52 +40,83 @@ var searchMethod = {
     $("#states").show();
   },
 
-  //function for input validation, kept separate so that it can be called when needed
-  inputValidation: function(variable, text){
-    console.log(variable);
-    console.log(text);
-    if (text !== "") {
-      console.log("there is text")
-      if(/^[a-zA-Z]+/.test(text)){
-        variable = text;
-        console.log(variable);
-        this.valid = true;
-      } else{
+  //function for input validation, kept separate so that it can be called when needed, this needs to work flawlessly in order for everything else to happen
+  inputValidation: function(input) {
+    if (input !== "") {
+      if (/^[a-zA-Z]+/.test(input)) {
+        return input;
+      } else {
         console.log("invalid");
       }
+    } else {
+      return "";
     }
-    //this.state = $("#states").val($(text).html);
   },
 
-  //the most powerful function in searchMethod, this will determine what kind of endpoint we're using, and based on that will populate senIdArr with all the IDs of all the senators it finds that match the search criteria; some parts need to be replaced (see below)
-  setSenId: function(firstName, lastName) {
-    this.senIdArr = [];
-    if ($("#name-button").hasClass("active")) {
-      this.senList.url = this.senURL + "115/Senate/members.json";
-      $.ajax(this.senList).done(function(response) {
-        var senMem = response.results[0].members;
+  // function for our search by name search type, this particular function ended up being huge; I'm using alerts for now just to test functionality, someone PLEASE replace them with modals like they're supposed to be (see below)
+  searchByName: function() {
+    this.firstName = this.inputValidation($("#first-name-bar").val());
+    this.lastName = this.inputValidation($("#last-name-bar").val());
+    this.senList.url = this.senURL + "115/Senate/members.json";
+    $.ajax(this.senList).done(function(response) {
+      var senMem = response.results[0].members;
+      if (searchMethod.firstName !== "" && searchMethod.lastName == "") {
         $.each(senMem, function(i) {
-          if (senMem[i].first_name == firstName && searchMethod.lastName == "") {
+          if (senMem[i].first_name == searchMethod.firstName) {
             searchMethod.senIdArr.push(senMem[i].id);
-          } else if (senMem[i].last_name == lastName && searchMethod.firstName == "") {
-            searchMethod.senIdArr.push(senMem[i].id);
-          } else if (senMem[i].first_name == firstName && senMem[i].last_name == lastName) {
-            searchMethod.senIdArr.push(senMem[i].id);
-          } else {
+          } else{
             //someone PLEASE replace this
-            alert("your search did not return any results");
+            alert("your search did not yield any results");
             return false;
           }
         });
-      });
-    } else if ($("#states-button").hasClass("active")) {
-      this.senList.url = this.senURL + "members/senate/" + this.state + "/current.json";
-      $.ajax(this.senList).done(function(response) {
-        var senMem = response.results;
+      } else if (searchMethod.lastName !== "" && searchMethod.firstName == "") {
         $.each(senMem, function(i) {
-          searchMethod.senIdArr.push(senMem[i].id);
+          if (senMem[i].last_name == searchMethod.lastName) {
+            searchMethod.senIdArr.push(senMem[i].id);
+          } else{
+            //someone PLEASE replace this
+            alert("your search did not yield any results");
+            return false;
+          }
         });
+      } else if (searchMethod.firstName !== "" && searchMethod.lastName !== "") {
+        $.each(senMem, function(i) {
+          if (senMem[i].first_name == searchMethod.firstName && senMem[i].last_name == searchMethod.lastName) {
+            searchMethod.senIdArr.push(senMem[i].id);
+          } else{
+            //someone PLEASE replace this
+            alert("your search did not yield any results");
+            return false;
+          }
+        });
+      } else if (searchMethod.firstName == "" && searchMethod.lastName == "") {
+        //someone PLEASE replace this
+        alert("please enter a name");
+        return false;
+      }
+    });
+  },
+
+  searchByState: function() {
+    this.state = $("#state-bar").text();
+    console.log(this.state);
+    this.senList.url = this.senURL + "members/senate/" + this.state + "/current.json";
+    $.ajax(this.senList).done(function(response) {
+      var senMem = response.results;
+      $.each(senMem, function(i) {
+        searchMethod.senIdArr.push(senMem[i].id);
       });
+    });
+  },
+
+  //this will determine what kind of endpoint we're using and based on that will populate senIdArr with all the IDs of all the senators it finds that match the search criteria
+  setSenId: function() {
+    this.senIdArr = [];
+    if ($("#name-button").hasClass("active")) {
+      this.searchByName();
+    } else if ($("#states-button").hasClass("active")) {
+      this.searchByState();
     }
     console.log(this.senIdArr);
   }
@@ -95,7 +124,7 @@ var searchMethod = {
 }
 
 
-
+//all the event listeners/callbacks are down here, again, once we start integrating this whole method into the rest of the project, we will need to replace all the id and class tags either here or in the html file
 $("#name-button").on("click", function() {
   searchMethod.activateNameButton(this);
 });
@@ -104,17 +133,10 @@ $("#states-button").on("click", function() {
   searchMethod.activateStatesButton(this);
 });
 
-$("#states-menu li a").on("click", function(){
-  searchMethod.inputValidation(this);
-  console.log(searchMethod.state);
+$("#states-menu li a").on("click", function() {
+  $("#state-bar").text($(this).attr("value"));
 });
 
 $("#search-button").on("click", function() {
-  searchMethod.inputValidation(searchMethod.firstName, $("#first-name-bar").val());
-  searchMethod.inputValidation(searchMethod.lastName, $("#last-name-bar").val());
-  if(searchMethod.valid == true){
-    console.log("good to go")
-    console.log(searchMethod.firstName, searchMethod.lastName);
-    // searchMethod.setSenId(searchMethod.firstName, searchMethod.lastName);
-  }
+  searchMethod.setSenId();
 });
