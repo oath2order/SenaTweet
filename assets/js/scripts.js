@@ -100,7 +100,7 @@ var searchMethod = {
   },
 
   searchByState: function() {
-    this.state = $("#state-bar").text();
+    this.state = $("#state-bar").val();
     console.log(this.state);
     this.senList.url = this.senURL + "members/senate/" + this.state + "/current.json";
     if(this.state !== "States"){
@@ -160,7 +160,8 @@ $("#party-button").on("click", function() {
 });
 
 $("#states-menu li a").on("click", function() {
-  $("#state-bar").text($(this).attr("value"));
+  $("#state-bar").text($(this).text())
+  $("#state-bar").val($(this).attr("value"));
 });
 
 $("#party-menu li a").on("click", function() {
