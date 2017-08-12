@@ -40,17 +40,18 @@ var searchMethod = {
     $("#states").show();
   },
 
-  //function for input validation, kept separate so that it can be called when needed, I'm using alerts for now just to test functionality, someone PLEASE replace them with modals like they're supposed to be (see below)
+  //function for input validation, kept separate so that it can be called when needed, I'm using console logs in place of actual alerts for now just to test functionality, someone PLEASE replace them with modals like they're supposed to be (see below)
   inputValidation: function(input) {
     if (input !== "") {
       if (/^[a-zA-Z]+/.test(input)) {
         return input;
       } else {
-        alert("invalid");
+        //someone PLEASE change this
+        console.log("invalid");
       }
     } else if ($("input").val() == "") {
       //someone PLEASE change this
-      alert("your field is empty, please type something");
+      console.log("your field is empty, please type something");
     }
   },
 
@@ -62,21 +63,21 @@ var searchMethod = {
     this.senList.url = this.senURL + "115/Senate/members.json";
     $.ajax(this.senList).done(function(response) {
       var senMem = response.results[0].members;
-      if (searchMethod.firstName !== "" && searchMethod.lastName == "") {
+      if (searchMethod.firstName !== undefined && searchMethod.lastName == undefined) {
         $.each(senMem, function(i) {
-          if (senMem[i].first_name == searchMethod.firstName) {
+          if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
           }
         });
-      } else if (searchMethod.lastName !== "" && searchMethod.firstName == "") {
+      } else if (searchMethod.lastName !== undefined && searchMethod.firstName == undefined) {
         $.each(senMem, function(i) {
-          if (senMem[i].last_name == searchMethod.lastName) {
+          if (senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
           }
         });
-      } else if (searchMethod.firstName !== "" && searchMethod.lastName !== "") {
+      } else if (searchMethod.firstName !== undefined && searchMethod.lastName !== undefined) {
         $.each(senMem, function(i) {
-          if (senMem[i].first_name == searchMethod.firstName && senMem[i].last_name == searchMethod.lastName) {
+          if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase() && senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
           }
         });
