@@ -59,8 +59,10 @@ var searchMethod = {
       if (/^[a-zA-Z]+/.test(input)) {
         return input;
       } else {
-        console.log("invalid");
+        return undefined;
       }
+    } else{
+      return undefined;
     }
   },
 
@@ -94,7 +96,7 @@ var searchMethod = {
         });
         console.log(searchMethod.senIdArr);
       } else if (searchMethod.firstName == undefined && searchMethod.lastName == undefined) {
-        console.log("your field is empty, please type something");
+        console.log("your field is either empty or invalid, please try again");
       }
     });
   },
