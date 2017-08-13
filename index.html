@@ -1,36 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+
 <head>
-  <title>SenaTweet</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1">  
-  <!-- Latest compiled and minified CSS -->
+  <title>Senatweet</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-  <!-- Optional theme-->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="assets/css/mdb.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
-
 </head>
+
 <body>
-  <div class="container main-content"> 
-    <input class="mdl-textfield__input" style="display:inline;width:auto;" type="text" id="email" name="email" placeholder="Email"/>
-    &nbsp;&nbsp;&nbsp;
-    <input class="mdl-textfield__input" style="display:inline;width:auto;" type="password" id="password" name="password" placeholder="Password"/>
-    <br/><br/>
-    <button class="mdl-button mdl-js-button mdl-button--raised" id="sign-in" name="signin">Sign In</button>
-    &nbsp;&nbsp;&nbsp;
-    <button class="mdl-button mdl-js-button mdl-button--raised" id="sign-up" name="signup">Sign Up</button>
-    &nbsp;&nbsp;&nbsp;
-    <button class="mdl-button mdl-js-button mdl-button--raised" id="sign-out" name="signout">Sign Out</button>
-    &nbsp;&nbsp;&nbsp;
-    <button class="mdl-button mdl-js-button mdl-button--raised" id="follow" name="favorite">Follow</button>
-    <div class="row">
-      <div class="col-md-6 panel" id="newsdisplay">
+  <div class="modal fade" id="loginmodal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#Signin" aria-controls="Signin" role="tab" data-toggle="tab">Sign In</a></li>
+            <li role="presentation"><a href="#Signup" aria-controls="Signup" role="tab" data-toggle="tab">Sign Up</a></li>
+          </ul>
+        </div>
+        <div class="modal-body">
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="Signin">
+              <form role="form">
+                <br>
+                <div class="form-group">
+                  <kbd>Enter Email</kbd>
+                  <input type="text" class="form-control" id="email-signin" placeholder="Enter email">
+                </div>
+                <br>
+                <div class="form-group">
+                  <kbd>Enter Password</kbd>
+                  <input type="text" class="form-control" id="password-signin" placeholder="Enter password">
+                </div>
+              </form>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success btn-block" id="sign-in"><span class="glyphicon glyphicon-off"></span> Login</button>
+              </div>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="Signup">
+              <form role="form">
+                <br>
+                <div class="form-group">
+                  <kbd>Enter Email</kbd>
+                  <input type="text" class="form-control" id="email-signup" placeholder="Enter email">
+                </div>
+                <br>
+                <div class="form-group">
+                  <kbd>Enter Password</kbd>
+                  <input type="text" class="form-control" id="password-signup" placeholder="Enter password">
+                </div>
+              </form>
+              <div class="modal-footer">
+                <button type="submit" class="btn btn-success btn-block" id="sign-up"><span class="glyphicon glyphicon-off"></span> Sign Up</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      <!-- /.modal-content -->
     </div>
-    <div class="form-group">
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+  <nav class="navbar navbar-expand-lg navbar-dark indigo navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Senatweet</a>
+      </div>
+      <ul class="nav navbar-nav navbar-left">
+        <li><a href="#">Find a Senator</a></li>
+        <li><a href="#" id="showfaves">Find My Senators</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#" id="openmodal">Login</a></li>
+        <li><a href="#" id="sign-out">Sign Out</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container main-content">
+    <div class="form-group search-form">
       <div class="input-group-btn">
-        <button class="btn btn-default search-by-name" id="name-button">Search By Name</button>
+        <button class="btn btn-default search-by-name active" id="name-button">Search By Name</button>
         <button class="btn btn-default search-by-state" id="states-button">Search By State</button>
         <button class="btn btn-default search-by-party" id="party-button">Search By Party</button>
       </div>
@@ -44,7 +100,7 @@
       </div>
       <div class="input-group dropdown search-by-state" id="states">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          <span id="state-bar" >States</span>
+          <span id="state-bar">States</span>
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" id="states-menu" aria-labelledby="dropdownMenu1">
@@ -102,7 +158,7 @@
       </div>
       <div class="input-group dropdown search-by-party" id="party">
         <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-          <span id="party-bar" >Party</span>
+          <span id="party-bar">Party</span>
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" id="party-menu" aria-labelledby="dropdownMenu1">
@@ -113,10 +169,59 @@
       </div>
       <button type="submit" class="btn btn-default" id="search-button">Submit</button>
     </div>
-  </div>  
+    <div class="row" id="search-results">
+    </div>
+  </div>
+  <div class="modal fade" id="senmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn btn-secondary" id="follow">Follow Senator</button>
+        </div>
+        <div class="container-fluid modal-body">
+          <div class="row">
+            <div class="col-sm-4 panel" id="cardlocation"></div>
+            <div class="col-sm-8 panel">
+              <div class="row">
+                <div class="panel" id="sub_commitees">sub_commitees
+                  <p>
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                  </p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="panel" id="recent_bills">recent_bills
+                  <p>
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                  </p>
+                </div>
+              </div>
+              <div class="row">
+                <div class=" panel" id="notcurrentlyused">Other Information
+                  <p>
+                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-6 panel" id="newsdisplay">
+            </div>
+            <div class="col-sm-6 panel" id="twitterArea">
+              <p>THIS IS THE TWITTER SECTION IT IS CURRENTLY IN DEVELOPMENT</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
 </body>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
-<script type="text/javascript" src="assets/js/config.js"></script>
-<script type="text/javascript" src="assets/js/scripts.js"></script>
+<script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/js/mdb.js"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/scripts.js"></script>
+
+</html>
