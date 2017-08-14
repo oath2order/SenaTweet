@@ -32,7 +32,20 @@ body{
   color: black;
 }
 
+.img-fluid.img-responsive{
+  cursor: pointer;
+}
+
 .flow-text{
   float: right;
   color: indigo;
+}
+
+#sub_commitees, #recent_bills, #notcurrentlyused{
+  padding-bottom: 10px;
+  
+}
+
+.row.panel {
+  border: 0;
 }
