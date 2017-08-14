@@ -213,9 +213,11 @@ function produceSen(senId){
 
       senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
     $.ajax(senList).done(function (response) {
+      $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
       console.log(response);
-      
-
+      for(var i = 0; i < response.results[0].bills.length; i++){
+        $("#recent_bills").append("<li>" + response.results[0].bills[i].title +  " (" + response.results[0].bills[i].number + ")</li>");
+      }
 
     });
 }
