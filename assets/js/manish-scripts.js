@@ -1,4 +1,44 @@
-//searchMethod is the object in which all the variables and functions for our search bar, search types, and submit button are held; one major problem is that all the id and class identifiers are interspersed throught the method rather than defined up top within a bunch of variables, so when it comes time to integrate this into the rest of the project someone will have to go through and replace every single tag with the correct one, either here or in the html file
+//api params
+var senEndpoint = "members";
+var senURL = "https://api.propublica.org/congress/v1/";
+var senList = {
+  "async": true,
+  "crossDomain": true,
+  "url": " ",
+  "method": "GET",
+  "headers": {
+    "x-api-key": "mayRUHtP2kt3W1WNxLvumC4K1LJyC89q9PDbKwQl"
+  }
+}
+//object to hold senator data
+var senObject = {};
+
+var senObjectArr = [];
+
+//senator search function and API call. 
+//If only first name is given will return the last matching senator it finds. Will only return one senator at present
+// $("#search-button").on("click", function(e) {
+//   var searchArr = $("#searchbar").val().split(" ");
+//   senList.url = senURL + "115/Senate/" + senEndpoint + ".json";
+//   $.ajax(senList).done(function (response) {
+//     var senMem = response.results[0].members;
+//     //runs through list checking each senator and producing an object based on first name and last name if included
+//     $.each(senMem, function(i){
+//       if(senMem[i].first_name == searchArr[0]){
+//         if(searchArr[1] != undefined){
+//           if(senMem[i].last_name == searchArr[1]){
+//             senId = senMem[i].id;
+//         }
+//       }
+//       else{
+//         senId = senMem[i].id;
+//       }
+//     }
+//     });
+//     produceSen(senId);
+//   });
+// });
+
 
 var searchMethod = {
 
@@ -61,7 +101,7 @@ var searchMethod = {
       } else {
         return undefined;
       }
-    } else{
+    } else {
       return undefined;
     }
   },
@@ -80,21 +120,27 @@ var searchMethod = {
             searchMethod.senIdArr.push(senMem[i].id);
           }
         });
-        console.log(searchMethod.senIdArr);
+        for (var i = 0; i < searchMethod.senIdArr.length; i++) {
+          produceSen(searchMethod.senIdArr[i]);
+        }
       } else if (searchMethod.lastName !== undefined && searchMethod.firstName == undefined) {
         $.each(senMem, function(i) {
           if (senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
           }
         });
-        console.log(searchMethod.senIdArr);
+        for (var i = 0; i < searchMethod.senIdArr.length; i++) {
+          produceSen(searchMethod.senIdArr[i]);
+        }
       } else if (searchMethod.firstName !== undefined && searchMethod.lastName !== undefined) {
         $.each(senMem, function(i) {
           if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase() && senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
           }
         });
-        console.log(searchMethod.senIdArr);
+        for (var i = 0; i < searchMethod.senIdArr.length; i++) {
+          produceSen(searchMethod.senIdArr[i]);
+        }
       } else if (searchMethod.firstName == undefined && searchMethod.lastName == undefined) {
         console.log("your field is either empty or invalid, please try again");
       }
@@ -102,35 +148,42 @@ var searchMethod = {
   },
 
   searchByState: function() {
-    this.state = $("#state-bar").val();
+    this.state = $("#state-bar").text();
     console.log(this.state);
     this.senList.url = this.senURL + "members/senate/" + this.state + "/current.json";
-    if(this.state !== "States"){
-      $.ajax(this.senList).done(function(response) {
+    if (this.state !== "") {
+      $.ajax(senList).done(function(response) {
         var senMem = response.results;
         $.each(senMem, function(i) {
           searchMethod.senIdArr.push(senMem[i].id);
         });
         console.log(searchMethod.senIdArr);
       });
-    } else{
-      console.log("specify a state first")
+      for (var i = 0; i < searchMethod.senIdArr.length; i++) {
+        produceSen(searchMethod.senIdArr[i]);
+      }
+    } else {
+      console.log("specify a state first");
     }
   },
 
-  searchByParty: function(){
+  searchByParty: function() {
     this.party = $("#party-bar").val();
     console.log(this.party);
     this.senList.url = this.senURL + "115/Senate/members.json";
-    $.ajax(this.senList).done(function(response) {
-      var senMem = response.results[0].members;
-      $.each(senMem, function(i) {
-        if (senMem[i].party == searchMethod.party) {
-          searchMethod.senIdArr.push(senMem[i].id);
-        }
+    if (this.party !== "") {
+      $.ajax(senList).done(function(response) {
+        var senMem = response.results[0].members;
+        $.each(senMem, function(i) {
+          if (senMem[i].party == searchMethod.party) {
+            searchMethod.senIdArr.push(senMem[i].id);
+          }
+        });
+        console.log(searchMethod.senIdArr);
       });
-      console.log(searchMethod.senIdArr);
-    });
+    } else {
+      console.log("specify a party first");
+    }
   },
 
   //this will determine what kind of endpoint we're using and based on that will populate senIdArr with all the IDs of all the senators it finds that match the search criteria
@@ -145,6 +198,15 @@ var searchMethod = {
     }
   }
 
+}
+
+function produceSen(senId) {
+  senList.url = senURL + senEndpoint + "/" + senId + ".json";
+  $.ajax(senList).done(function(response) {
+    senObject = response;
+    console.log(senList.url);
+    console.log(senObject);
+  });
 }
 
 
@@ -173,4 +235,5 @@ $("#party-menu li a").on("click", function() {
 
 $("#search-button").on("click", function() {
   searchMethod.setSenId();
+  searchMethod.produceSen();
 });
