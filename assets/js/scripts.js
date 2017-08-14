@@ -188,100 +188,99 @@ function produceSen(senId){
     senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
     senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</h4></div></div>');
     timesHandler.apiCall(senObject.results[0].first_name, senObject.results[0].last_name);
-    //getTweets(senObject.results[0].twitter_account);
     getTweets(senObject.results[0].twitter_account);
   });
 }
 
-//handles all firebasee account and database functions
-// var accHandler = {
-//   //user and database object variables
-//   userDatabase : firebase.database(),
-//   userArr : [],
-//   uid : "",
-//   //event listener for follow button leads here
-//   senFollow : function(){
-//     var senId = $("#follow").val();
-//     console.log(senId);
-//     if($.inArray(senId, accHandler.userArr) === -1){
-//       accHandler.userDatabase.ref(accHandler.uid).push(senId);
-//     }
-//     else{
-//       alert('Senator Already Followed');
-//     }
-//   },
-//   //Will be used to render the senator bios for the user page
-//   buildSenList : function(){
-//   accHandler.userDatabase.ref(accHandler.uid).on("value", function(snapShot){
-//       accHandler.userArr = Object.values(snapShot.val());
-//       searchMethod.displayFavorites(accHandler.userArr);
-//     })
-//   },
-//   //creates user when sign up button is pressed
-//   createUser: function(){
-//   var email = $("#email-signup").val();
-//   var password = $("#password-signup").val();
-//   //handles error returning
-//   if (email.length < 4) {
-//     alert('Please enter an email address.');
-//     return;
-//   }
-//   if (password.length < 4) {
-//     alert('Please enter a password.');
-//     return;
-//   }
-//   // Sign in with email and pass.
-//   // [START createwithemail]
-//   firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-//     // Handle Errors here.
-//     var errorCode = error.code;
-//     var errorMessage = error.message;
-//     // [START_EXCLUDE]
-//     if (errorCode == 'auth/weak-password') {  
-//       alert('The password is too weak.');
-//     } else {
-//       alert(errorMessage);
-//     }
-//     console.log(error);
-//     // [END_EXCLUDE]
-//   });
-//     // [END createwithemail]
-//     console.log(firebase.auth().currentUser);
-// },
-//   //handles user sign in functionality
-//   signIn: function(){
-//   var email = $("#email-signin").val();
-//   var password = $("#password-signin").val();
-//   firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-//     // Handle Errors here.
-//     var errorCode = error.code;
-//     var errorMessage = error.message;
-//     // [START_EXCLUDE]
-//     if (errorCode === 'auth/wrong-password') {
-//       alert('Wrong password.');
-//     } else {
-//       alert(errorMessage);
-//     }
-//     console.log(error);
-//     // [END_EXCLUDE]
-//   })
-//   console.log(firebase.auth().currentUser);
-//   },
-//   //handles user sign out functionality
-//   signOut: function(){
-//     firebase.auth().signOut();
-//     accHandler.uid = "";
-//     accHandler.userArr = [];
-//     $("#search-results").empty();
-//   },
-//   //handles user sign out functionality
-//   initApp: function(){
-//     firebase.auth().onAuthStateChanged(function(user) {
-//       accHandler.uid = user.uid;
-//       accHandler.buildSenList();
-//     });
-//   }
-// };
+handles all firebasee account and database functions
+var accHandler = {
+  //user and database object variables
+  userDatabase : firebase.database(),
+  userArr : [],
+  uid : "",
+  //event listener for follow button leads here
+  senFollow : function(){
+    var senId = $("#follow").val();
+    console.log(senId);
+    if($.inArray(senId, accHandler.userArr) === -1){
+      accHandler.userDatabase.ref(accHandler.uid).push(senId);
+    }
+    else{
+      alert('Senator Already Followed');
+    }
+  },
+  //Will be used to render the senator bios for the user page
+  buildSenList : function(){
+  accHandler.userDatabase.ref(accHandler.uid).on("value", function(snapShot){
+      accHandler.userArr = Object.values(snapShot.val());
+      searchMethod.displayFavorites(accHandler.userArr);
+    })
+  },
+  //creates user when sign up button is pressed
+  createUser: function(){
+  var email = $("#email-signup").val();
+  var password = $("#password-signup").val();
+  //handles error returning
+  if (email.length < 4) {
+    alert('Please enter an email address.');
+    return;
+  }
+  if (password.length < 4) {
+    alert('Please enter a password.');
+    return;
+  }
+  // Sign in with email and pass.
+  // [START createwithemail]
+  firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // [START_EXCLUDE]
+    if (errorCode == 'auth/weak-password') {  
+      alert('The password is too weak.');
+    } else {
+      alert(errorMessage);
+    }
+    console.log(error);
+    // [END_EXCLUDE]
+  });
+    // [END createwithemail]
+    console.log(firebase.auth().currentUser);
+},
+  //handles user sign in functionality
+  signIn: function(){
+  var email = $("#email-signin").val();
+  var password = $("#password-signin").val();
+  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+    // [START_EXCLUDE]
+    if (errorCode === 'auth/wrong-password') {
+      alert('Wrong password.');
+    } else {
+      alert(errorMessage);
+    }
+    console.log(error);
+    // [END_EXCLUDE]
+  })
+  console.log(firebase.auth().currentUser);
+  },
+  //handles user sign out functionality
+  signOut: function(){
+    firebase.auth().signOut();
+    accHandler.uid = "";
+    accHandler.userArr = [];
+    $("#search-results").empty();
+  },
+  //handles user sign out functionality
+  initApp: function(){
+    firebase.auth().onAuthStateChanged(function(user) {
+      accHandler.uid = user.uid;
+      accHandler.buildSenList();
+    });
+  }
+};
 
 //handles API calls for the NYTimes
 var timesHandler = {
@@ -349,14 +348,14 @@ $("#search-results").on("click", ".card", function() {
   produceSen(this.id);
   $("#twitterArea").html("");   // clears twitter area, or it will continually append tweets
 });
-// document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
-// document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
-// document.getElementById('sign-out').addEventListener('click', accHandler.signOut, false);
-// document.getElementById('follow').addEventListener('click', accHandler.senFollow, false);
+document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
+document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
+document.getElementById('sign-out').addEventListener('click', accHandler.signOut, false);
+document.getElementById('follow').addEventListener('click', accHandler.senFollow, false);
 $('#Signup').tab('show')
 $('#Signin').tab('show')
 window.onload = function() {
-  // accHandler.initApp();
+  accHandler.initApp();
 };
 
 function getTweets(handle){
