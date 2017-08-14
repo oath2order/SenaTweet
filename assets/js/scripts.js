@@ -176,13 +176,13 @@ var searchMethod = {
 
 }
 
-function produceSen(senId) {
+function produceSen(senId){
   senList.url = senURL + senEndpoint + "/" + senId + ".json";
   $('#senmodal').modal('show');
   $("#cardlocation").empty();
   $("#newsdisplay").empty();
   $("#follow").val(senId);
-  $.ajax(senList).done(function(response) {
+  $.ajax(senList).done(function (response) {
     //console.log(response);
     senObject = response;
     $("#notcurrentlyused").html("<u><b>Basic Information:</b></u>");
@@ -192,24 +192,44 @@ function produceSen(senId) {
     $("#notcurrentlyused").append("<h6>Current term end date: " + senObject.results[0].roles[0].end_date + "</h6>");
     $("#notcurrentlyused").append("<h6>Phone number: " + senObject.results[0].roles[0].phone + "</h6>");
     $("#notcurrentlyused").append("<h6>Fax number: " + senObject.results[0].roles[0].fax + "</h6>");
-    $("#notcurrentlyused").append("<h6>Bills sponsored: " + senObject.results[0].roles[0].bills_sponsored + "</h6>");
-    $("#notcurrentlyused").append("<h6>Bills co-sponsored: " + senObject.results[0].roles[0].bills_cosponsored + "</h6>");
+    // $("#notcurrentlyused").append("<h6>Bills sponsored: " + senObject.results[0].roles[0].bills_sponsored + "</h6>");
+    // $("#notcurrentlyused").append("<h6>Bills co-sponsored: " + senObject.results[0].roles[0].bills_cosponsored + "</h6>");
     $("#notcurrentlyused").append("<h6>Most recent vote: " + senObject.results[0].most_recent_vote + "</h6>");
     $("#notcurrentlyused").append("<h6>Missed vote percentage: " + senObject.results[0].roles[0].missed_votes_pct + "%</h6>");
     $("#notcurrentlyused").append("<h6>Votes with party percentage: " + senObject.results[0].roles[0].votes_with_party_pct + "%</h6>");
 
-
-    for (var i = 0; i < senObject.results[0].roles[0].committees.length; i++) {
-      $("#sub_commitees").append("<li>" + senObject.results[0].roles[0].committees[i].name + " (" + senObject.results[0].roles[0].committees[i].code + ")</li>");
+    
+    for(var i = 0; i < senObject.results[0].roles[0].committees.length; i++){
+      $("#sub_commitees").append("<li>" + senObject.results[0].roles[0].committees[i].name +  " (" + senObject.results[0].roles[0].committees[i].code + ")</li>");
     }
 
 
     $("#cardlocation").append('<div class="card"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
-      senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
-      senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</h4></div></div>');
+    senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
+    senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</h4></div></div>');
     timesHandler.apiCall(senObject.results[0].first_name, senObject.results[0].last_name);
     getTweets(senObject.results[0].twitter_account);
   });
+
+      senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
+    $.ajax(senList).done(function (response) {
+      $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
+      $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
+      console.log(response);
+      for(var i = 0; i < response.results[0].bills.length; i++){
+        var link = response.results[0].bills[i].govtrack_url;
+        var ID = "href" + i;
+        if(response.results[0].bills[i].bill_type == "s"){
+          $("#recent_bills").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+          $("#" + ID).attr('href', link);
+        }
+        else{
+          $("#resolutions").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+          $("#" + ID).attr('href', link);
+        }
+      }
+
+    });
 }
 
 //handles all firebasee account and database functions
