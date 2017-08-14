@@ -1,7 +1,7 @@
 //api params
 var senEndpoint = "members";
 var senURL = "https://api.propublica.org/congress/v1/";
-var senList   = {
+var senList = {
   "async": true,
   "crossDomain": true,
   "url": " ",
@@ -67,7 +67,7 @@ var searchMethod = {
   },
 
   //function for input validation, kept separate so that it can be called when needed, I'm using console logs in place of actual alerts for now just to test functionality, someone PLEASE replace them with modals like they're supposed to be (see below)
-  inputValidation: function(input) {  
+  inputValidation: function(input) {
     if (input !== "") {
       if (/^[a-zA-Z]+/.test(input)) {
         return input;
@@ -115,19 +115,19 @@ var searchMethod = {
     this.state = $("#state-bar").val();
     console.log(this.state);
     senList.url = senURL + "members/senate/" + this.state + "/current.json";
-    if(this.state !== "States"){
+    if (this.state !== "States") {
       $.ajax(senList).done(function(response) {
         var senMem = response.results;
         $.each(senMem, function(i) {
           searchMethod.senIdArr.push(senMem[i].id);
-          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
+          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, searchMethod.state, senMem[i].id);
         });
       });
-    } else{
+    } else {
       console.log("specify a state first")
     }
   },
-  searchByParty: function(){
+  searchByParty: function() {
     this.party = $("#party-bar").val();
     console.log(this.party);
     senList.url = senURL + "115/Senate/members.json";
@@ -141,7 +141,7 @@ var searchMethod = {
       });
     });
   },
-  displayFavorites: function(senArr){
+  displayFavorites: function(senArr) {
     $("#search-results").empty();
     senList.url = senURL + "115/Senate/members.json";
     $.ajax(senList).done(function(response) {
@@ -152,7 +152,7 @@ var searchMethod = {
           searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
         }
       });
-    });    
+    });
 
   },
   //this will determine what kind of endpoint we're using and based on that will populate senIdArr with all the IDs of all the senators it finds that match the search criteria
@@ -167,26 +167,46 @@ var searchMethod = {
       this.searchByParty();
     }
   },
-  renderSearch: function(firstname, lastname, party, state, id){
-    $("#search-results").append('<div class="card col-sm-3" id="' + id + 
-    '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
-    id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
-    firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div></div>')
+  renderSearch: function(firstname, lastname, party, state, id) {
+    $("#search-results").append('<div class="card col-sm-3" id="' + id +
+      '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
+      id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+      firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div></div>')
   }
 
 }
 
-function produceSen(senId){
+function produceSen(senId) {
   senList.url = senURL + senEndpoint + "/" + senId + ".json";
   $('#senmodal').modal('show');
   $("#cardlocation").empty();
   $("#newsdisplay").empty();
   $("#follow").val(senId);
-  $.ajax(senList).done(function (response) {
+  $.ajax(senList).done(function(response) {
+    //console.log(response);
     senObject = response;
+    $("#notcurrentlyused").html("<u><b>Basic Information:</b></u>");
+    $("#sub_commitees").html("<u><b>Current Committee Memberships:</b></u><ul></ul>");
+    $("#notcurrentlyused").append("<h6>Full title and rank: " + senObject.results[0].roles[0].title + " (" + senObject.results[0].roles[0].state_rank + ")</h6>");
+    $("#notcurrentlyused").append("<h6>Date of birth: " + senObject.results[0].date_of_birth + "</h6>");
+    $("#notcurrentlyused").append("<h6>Current term end date: " + senObject.results[0].roles[0].end_date + "</h6>");
+    $("#notcurrentlyused").append("<h6>Phone number: " + senObject.results[0].roles[0].phone + "</h6>");
+    $("#notcurrentlyused").append("<h6>Fax number: " + senObject.results[0].roles[0].fax + "</h6>");
+    $("#notcurrentlyused").append("<h6>Bills sponsored: " + senObject.results[0].roles[0].bills_sponsored + "</h6>");
+    $("#notcurrentlyused").append("<h6>Bills co-sponsored: " + senObject.results[0].roles[0].bills_cosponsored + "</h6>");
+    $("#notcurrentlyused").append("<h6>Most recent vote: " + senObject.results[0].most_recent_vote + "</h6>");
+    $("#notcurrentlyused").append("<h6>Missed vote percentage: " + senObject.results[0].roles[0].missed_votes_pct + "%</h6>");
+    $("#notcurrentlyused").append("<h6>Votes with party percentage: " + senObject.results[0].roles[0].votes_with_party_pct + "%</h6>");
+
+
+    for (var i = 0; i < senObject.results[0].roles[0].committees.length; i++) {
+      $("#sub_commitees").append("<li>" + senObject.results[0].roles[0].committees[i].name + " (" + senObject.results[0].roles[0].committees[i].code + ")</li>");
+    }
+
+
     $("#cardlocation").append('<div class="card"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
-    senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
-    senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</h4></div></div>');
+      senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+      senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</h4></div></div>');
     timesHandler.apiCall(senObject.results[0].first_name, senObject.results[0].last_name);
     getTweets(senObject.results[0].twitter_account);
   });
@@ -195,86 +215,85 @@ function produceSen(senId){
 //handles all firebasee account and database functions
 var accHandler = {
   //user and database object variables
-  userDatabase : firebase.database(),
-  userArr : [],
-  uid : "",
+  userDatabase: firebase.database(),
+  userArr: [],
+  uid: "",
   //event listener for follow button leads here
-  senFollow : function(){
+  senFollow: function() {
     var senId = $("#follow").val();
     console.log(senId);
-    if($.inArray(senId, accHandler.userArr) === -1){
+    if ($.inArray(senId, accHandler.userArr) === -1) {
       accHandler.userDatabase.ref(accHandler.uid).push(senId);
-    }
-    else{
+    } else {
       alert('Senator Already Followed');
     }
   },
   //Will be used to render the senator bios for the user page
-  buildSenList : function(){
-  accHandler.userDatabase.ref(accHandler.uid).on("value", function(snapShot){
+  buildSenList: function() {
+    accHandler.userDatabase.ref(accHandler.uid).on("value", function(snapShot) {
       accHandler.userArr = Object.values(snapShot.val());
       searchMethod.displayFavorites(accHandler.userArr);
     })
   },
   //creates user when sign up button is pressed
-  createUser: function(){
-  var email = $("#email-signup").val();
-  var password = $("#password-signup").val();
-  //handles error returning
-  if (email.length < 4) {
-    alert('Please enter an email address.');
-    return;
-  }
-  if (password.length < 4) {
-    alert('Please enter a password.');
-    return;
-  }
-  // Sign in with email and pass.
-  // [START createwithemail]
-  firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    // [START_EXCLUDE]
-    if (errorCode == 'auth/weak-password') {  
-      alert('The password is too weak.');
-    } else {
-      alert(errorMessage);
+  createUser: function() {
+    var email = $("#email-signup").val();
+    var password = $("#password-signup").val();
+    //handles error returning
+    if (email.length < 4) {
+      alert('Please enter an email address.');
+      return;
     }
-    console.log(error);
-    // [END_EXCLUDE]
-  });
+    if (password.length < 4) {
+      alert('Please enter a password.');
+      return;
+    }
+    // Sign in with email and pass.
+    // [START createwithemail]
+    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // [START_EXCLUDE]
+      if (errorCode == 'auth/weak-password') {
+        alert('The password is too weak.');
+      } else {
+        alert(errorMessage);
+      }
+      console.log(error);
+      // [END_EXCLUDE]
+    });
     // [END createwithemail]
     console.log(firebase.auth().currentUser);
-},
+  },
   //handles user sign in functionality
-  signIn: function(){
-  var email = $("#email-signin").val();
-  var password = $("#password-signin").val();
-  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    // [START_EXCLUDE]
-    if (errorCode === 'auth/wrong-password') {
-      alert('Wrong password.');
-    } else {
-      alert(errorMessage);
-    }
-    console.log(error);
-    // [END_EXCLUDE]
-  })
-  console.log(firebase.auth().currentUser);
+  signIn: function() {
+    var email = $("#email-signin").val();
+    var password = $("#password-signin").val();
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // [START_EXCLUDE]
+      if (errorCode === 'auth/wrong-password') {
+        alert('Wrong password.');
+      } else {
+        alert(errorMessage);
+      }
+      console.log(error);
+      // [END_EXCLUDE]
+    })
+    console.log(firebase.auth().currentUser);
   },
   //handles user sign out functionality
-  signOut: function(){
+  signOut: function() {
     firebase.auth().signOut();
     accHandler.uid = "";
     accHandler.userArr = [];
     $("#search-results").empty();
   },
   //handles user sign out functionality
-  initApp: function(){
+  initApp: function() {
     firebase.auth().onAuthStateChanged(function(user) {
       accHandler.uid = user.uid;
       accHandler.buildSenList();
@@ -284,30 +303,30 @@ var accHandler = {
 
 //handles API calls for the NYTimes
 var timesHandler = {
- apiCall : function(firstName, lastName){
-  var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
-  url += '?' + $.param({
-    'api-key': "4ef882df201e419684d1da14f37e8634",
-    'q': firstName + " " + lastName,
-    'fl': "web_url, snippet, headline"
-  });
-  //console.log(url);
-  $.ajax({
-    url: url,
-    method: 'GET',
-  }).done(function(result) {
-    timesHandler.renderArticles(result.response.docs);
-  }).fail(function(err) {
-    throw err;
-  });
- },
- //renders the articles to the senator modal
- renderArticles: function(list){
+  apiCall: function(firstName, lastName) {
+    var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json"
+    url += '?' + $.param({
+      'api-key': "4ef882df201e419684d1da14f37e8634",
+      'q': firstName + " " + lastName,
+      'fl': "web_url, snippet, headline"
+    });
+    //console.log(url);
+    $.ajax({
+      url: url,
+      method: 'GET',
+    }).done(function(result) {
+      timesHandler.renderArticles(result.response.docs);
+    }).fail(function(err) {
+      throw err;
+    });
+  },
+  //renders the articles to the senator modal
+  renderArticles: function(list) {
     $("#newsdisplay").empty();
     for (var i = 0; i <= 2; i++) {
       //console.log(list[i])
-      $("#newsdisplay").append("<a href='" + list[i].web_url + "' target='blank'><h4 class='headline'>" 
-      + list[i].headline.main + "</h4></a><p clas='snippet'>" + list[i].snippet + "</p>")
+      $("#newsdisplay").append("<a href='" + list[i].web_url + "' target='blank'><h4 class='headline'>" +
+        list[i].headline.main + "</h4></a><p clas='snippet'>" + list[i].snippet + "</p>")
     }
   }
 }
@@ -346,7 +365,7 @@ $("#showfaves").on("click", function() {
 });
 $("#search-results").on("click", ".card", function() {
   produceSen(this.id);
-  $("#twitterArea").html("");   // clears twitter area, or it will continually append tweets
+  $("#twitterArea").html(""); // clears twitter area, or it will continually append tweets
 });
 document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
 document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
@@ -358,8 +377,8 @@ window.onload = function() {
   accHandler.initApp();
 };
 
-function getTweets(handle){
-  twttr.widgets.createTimeline({sourceType: "profile", screenName: handle}, document.getElementById('twitterArea'),{tweetLimit: 5});
+function getTweets(handle) {
+  twttr.widgets.createTimeline({ sourceType: "profile", screenName: handle }, document.getElementById('twitterArea'), { tweetLimit: 5 });
 }
 
 window.twttr = (function(d, s, id) {
