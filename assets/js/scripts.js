@@ -192,8 +192,8 @@ function produceSen(senId){
     $("#notcurrentlyused").append("<h6>Current term end date: " + senObject.results[0].roles[0].end_date + "</h6>");
     $("#notcurrentlyused").append("<h6>Phone number: " + senObject.results[0].roles[0].phone + "</h6>");
     $("#notcurrentlyused").append("<h6>Fax number: " + senObject.results[0].roles[0].fax + "</h6>");
-    $("#notcurrentlyused").append("<h6>Bills sponsored: " + senObject.results[0].roles[0].bills_sponsored + "</h6>");
-    $("#notcurrentlyused").append("<h6>Bills co-sponsored: " + senObject.results[0].roles[0].bills_cosponsored + "</h6>");
+    // $("#notcurrentlyused").append("<h6>Bills sponsored: " + senObject.results[0].roles[0].bills_sponsored + "</h6>");
+    // $("#notcurrentlyused").append("<h6>Bills co-sponsored: " + senObject.results[0].roles[0].bills_cosponsored + "</h6>");
     $("#notcurrentlyused").append("<h6>Most recent vote: " + senObject.results[0].most_recent_vote + "</h6>");
     $("#notcurrentlyused").append("<h6>Missed vote percentage: " + senObject.results[0].roles[0].missed_votes_pct + "%</h6>");
     $("#notcurrentlyused").append("<h6>Votes with party percentage: " + senObject.results[0].roles[0].votes_with_party_pct + "%</h6>");
@@ -214,9 +214,19 @@ function produceSen(senId){
       senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
     $.ajax(senList).done(function (response) {
       $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
+      $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
       console.log(response);
       for(var i = 0; i < response.results[0].bills.length; i++){
-        $("#recent_bills").append("<li>" + response.results[0].bills[i].title +  " (" + response.results[0].bills[i].number + ")</li>");
+        var link = response.results[0].bills[i].govtrack_url;
+        var ID = "href" + i;
+        if(response.results[0].bills[i].bill_type == "s"){
+          $("#recent_bills").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+          $("#" + ID).attr('href', link);
+        }
+        else{
+          $("#resolutions").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+          $("#" + ID).attr('href', link);
+        }
       }
 
     });
