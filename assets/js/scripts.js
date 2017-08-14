@@ -188,10 +188,11 @@ function produceSen(senId){
     senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
     senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</h4></div></div>');
     timesHandler.apiCall(senObject.results[0].first_name, senObject.results[0].last_name);
+    getTweets(senObject.results[0].twitter_account);
   });
 }
 
-//handles all firebasee account and database functions
+handles all firebasee account and database functions
 var accHandler = {
   //user and database object variables
   userDatabase : firebase.database(),
@@ -290,7 +291,7 @@ var timesHandler = {
     'q': firstName + " " + lastName,
     'fl': "web_url, snippet, headline"
   });
-  console.log(url);
+  //console.log(url);
   $.ajax({
     url: url,
     method: 'GET',
@@ -304,7 +305,7 @@ var timesHandler = {
  renderArticles: function(list){
     $("#newsdisplay").empty();
     for (var i = 0; i <= 2; i++) {
-      console.log(list[i])
+      //console.log(list[i])
       $("#newsdisplay").append("<a href='" + list[i].web_url + "' target='blank'><h4 class='headline'>" 
       + list[i].headline.main + "</h4></a><p clas='snippet'>" + list[i].snippet + "</p>")
     }
@@ -345,6 +346,7 @@ $("#showfaves").on("click", function() {
 });
 $("#search-results").on("click", ".card", function() {
   produceSen(this.id);
+  $("#twitterArea").html("");   // clears twitter area, or it will continually append tweets
 });
 document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
 document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
@@ -356,3 +358,23 @@ window.onload = function() {
   accHandler.initApp();
 };
 
+function getTweets(handle){
+  twttr.widgets.createTimeline({sourceType: "profile", screenName: handle}, document.getElementById('twitterArea'),{tweetLimit: 5});
+}
+
+window.twttr = (function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+  if (d.getElementById(id)) return t;
+  js = d.createElement(s);
+  js.id = id;
+  js.src = "https://platform.twitter.com/widgets.js";
+  fjs.parentNode.insertBefore(js, fjs);
+
+  t._e = [];
+  t.ready = function(f) {
+    t._e.push(f);
+  };
+
+  return t;
+}(document, "script", "twitter-wjs"));
