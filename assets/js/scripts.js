@@ -107,7 +107,7 @@ var searchMethod = {
           }
         });
       } else if (searchMethod.firstName == undefined && searchMethod.lastName == undefined) {
-        console.log("your field is empty, please type something");
+        console.log("your field is either empty or invalid, please try again");
       }
     });
   },
@@ -115,7 +115,7 @@ var searchMethod = {
     this.state = $("#state-bar").val();
     console.log(this.state);
     senList.url = senURL + "members/senate/" + this.state + "/current.json";
-    if (this.state !== "States") {
+    if (this.state !== "") {
       $.ajax(senList).done(function(response) {
         var senMem = response.results;
         $.each(senMem, function(i) {
@@ -124,22 +124,26 @@ var searchMethod = {
         });
       });
     } else {
-      console.log("specify a state first")
+      console.log("specify a state first");
     }
   },
   searchByParty: function() {
     this.party = $("#party-bar").val();
     console.log(this.party);
     senList.url = senURL + "115/Senate/members.json";
-    $.ajax(senList).done(function(response) {
-      var senMem = response.results[0].members;
-      $.each(senMem, function(i) {
-        if (senMem[i].party == searchMethod.party) {
-          searchMethod.senIdArr.push(senMem[i].id);
-          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
-        }
+    if (this.party !== "") {
+      $.ajax(senList).done(function(response) {
+        var senMem = response.results[0].members;
+        $.each(senMem, function(i) {
+          if (senMem[i].party == searchMethod.party) {
+            searchMethod.senIdArr.push(senMem[i].id);
+            searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
+          }
+        });
       });
-    });
+    } else{
+      console.log("specify a party first");
+    }
   },
   displayFavorites: function(senArr) {
     $("#search-results").empty();
