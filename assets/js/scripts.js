@@ -67,7 +67,9 @@ var searchMethod = {
   },
 
   //function for input validation, kept separate so that it can be called when needed, I'm using console logs in place of actual alerts for now just to test functionality, someone PLEASE replace them with modals like they're supposed to be (see below)
+
   inputValidation: function(input) {
+
     if (input !== "") {
       if (/^[a-zA-Z]+/.test(input)) {
         return input;
@@ -347,6 +349,8 @@ var timesHandler = {
       //console.log(list[i])
       $("#newsdisplay").append("<a href='" + list[i].web_url + "' target='blank'><h4 class='headline'>" +
         list[i].headline.main + "</h4></a><p clas='snippet'>" + list[i].snippet + "</p>")
+=======
+  
     }
   }
 }
@@ -386,6 +390,7 @@ $("#showfaves").on("click", function() {
 $("#search-results").on("click", ".card", function() {
   produceSen(this.id);
   $("#twitterArea").html(""); // clears twitter area, or it will continually append tweets
+
 });
 document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
 document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
@@ -396,6 +401,7 @@ $('#Signin').tab('show')
 window.onload = function() {
   accHandler.initApp();
 };
+
 
 function getTweets(handle) {
   twttr.widgets.createTimeline({ sourceType: "profile", screenName: handle }, document.getElementById('twitterArea'), { tweetLimit: 5 });
@@ -416,4 +422,6 @@ window.twttr = (function(d, s, id) {
   };
 
   return t;
+
 }(document, "script", "twitter-wjs"));
+
