@@ -67,9 +67,7 @@ var searchMethod = {
   },
 
   //function for input validation, kept separate so that it can be called when needed, I'm using console logs in place of actual alerts for now just to test functionality, someone PLEASE replace them with modals like they're supposed to be (see below)
-
   inputValidation: function(input) {
-
     if (input !== "") {
       if (/^[a-zA-Z]+/.test(input)) {
         return input;
@@ -109,7 +107,7 @@ var searchMethod = {
           }
         });
       } else if (searchMethod.firstName == undefined && searchMethod.lastName == undefined) {
-        console.log("your field is empty, please type something");
+        console.log("your field is either empty or invalid, please try again");
       }
     });
   },
@@ -117,7 +115,7 @@ var searchMethod = {
     this.state = $("#state-bar").val();
     console.log(this.state);
     senList.url = senURL + "members/senate/" + this.state + "/current.json";
-    if (this.state !== "States") {
+    if (this.state !== "") {
       $.ajax(senList).done(function(response) {
         var senMem = response.results;
         $.each(senMem, function(i) {
@@ -126,22 +124,26 @@ var searchMethod = {
         });
       });
     } else {
-      console.log("specify a state first")
+      console.log("specify a state first");
     }
   },
   searchByParty: function() {
     this.party = $("#party-bar").val();
     console.log(this.party);
     senList.url = senURL + "115/Senate/members.json";
-    $.ajax(senList).done(function(response) {
-      var senMem = response.results[0].members;
-      $.each(senMem, function(i) {
-        if (senMem[i].party == searchMethod.party) {
-          searchMethod.senIdArr.push(senMem[i].id);
-          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
-        }
+    if (this.party !== "") {
+      $.ajax(senList).done(function(response) {
+        var senMem = response.results[0].members;
+        $.each(senMem, function(i) {
+          if (senMem[i].party == searchMethod.party) {
+            searchMethod.senIdArr.push(senMem[i].id);
+            searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
+          }
+        });
       });
-    });
+    } else{
+      console.log("specify a party first");
+    }
   },
   displayFavorites: function(senArr) {
     $("#search-results").empty();
@@ -349,8 +351,6 @@ var timesHandler = {
       //console.log(list[i])
       $("#newsdisplay").append("<a href='" + list[i].web_url + "' target='blank'><h4 class='headline'>" +
         list[i].headline.main + "</h4></a><p clas='snippet'>" + list[i].snippet + "</p>")
-=======
-  
     }
   }
 }
@@ -390,7 +390,6 @@ $("#showfaves").on("click", function() {
 $("#search-results").on("click", ".card", function() {
   produceSen(this.id);
   $("#twitterArea").html(""); // clears twitter area, or it will continually append tweets
-
 });
 document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
 document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
@@ -401,7 +400,6 @@ $('#Signin').tab('show')
 window.onload = function() {
   accHandler.initApp();
 };
-
 
 function getTweets(handle) {
   twttr.widgets.createTimeline({ sourceType: "profile", screenName: handle }, document.getElementById('twitterArea'), { tweetLimit: 5 });
@@ -422,6 +420,4 @@ window.twttr = (function(d, s, id) {
   };
 
   return t;
-
 }(document, "script", "twitter-wjs"));
-
