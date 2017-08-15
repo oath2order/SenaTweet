@@ -211,25 +211,65 @@ function produceSen(senId){
     getTweets(senObject.results[0].twitter_account);
   });
 
-      senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
-    $.ajax(senList).done(function (response) {
-      $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
-      $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
-      console.log(response);
-      for(var i = 0; i < response.results[0].bills.length; i++){
-        var link = response.results[0].bills[i].govtrack_url;
-        var ID = "href" + i;
-        if(response.results[0].bills[i].bill_type == "s"){
-          $("#recent_bills").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
-          $("#" + ID).attr('href', link);
+  senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
+  $.ajax(senList).done(function (response) {
+    $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
+    $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
+    //console.log(response);
+    for(var i = 0; i < response.results[0].bills.length; i++){
+      var link = response.results[0].bills[i].govtrack_url;
+      var ID = "href" + i;
+      if(response.results[0].bills[i].bill_type == "s"){
+        $("#recent_bills").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+        $("#" + ID).attr('href', link);
+      }
+      else{
+        $("#resolutions").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+        $("#" + ID).attr('href', link);
+      }
+    }
+  });
+
+  senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/cosponsored.json";
+  $.ajax(senList).done(function (response) {
+    //console.log(response);
+    var senators = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+    var counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    var topSenator = "";
+    var maxCount = 0;
+    var location = 0;
+
+
+    for(var i = 0; i < response.results[0].bills.length; i++){
+      for(var j = 0; j < senators.length; j++){
+        if(senators[j] == ""){
+          senators[j] = response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")";
+          counter[j] = 1;
+          break;
         }
-        else{
-          $("#resolutions").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
-          $("#" + ID).attr('href', link);
+
+        else if(senators[j] == response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")"){
+          counter[j]++;
+          break;
         }
       }
+    }
 
-    });
+    for(var k = 0; k < senators.length; k++){
+      if(counter[k] > maxCount){
+        maxCount = counter[k];
+        location = k;
+      }
+    }
+    if(maxCount > 1){
+      $("#notcurrentlyused").append("<h6>Senator most cosponsored: " + senators[location] + " (" + maxCount + ")</h6>");
+    }
+    else{
+      $("#notcurrentlyused").append("<h6>Senator most cosponsored: N/A</h6>");
+    }
+    
+  });
+   
 }
 
 // //handles all firebasee account and database functions
