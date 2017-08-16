@@ -290,34 +290,8 @@ function produceSen(senId){
     }
     else{
       $("#notcurrentlyused").append("<h6>Senator most cosponsored: N/A</h6>");
-    }
-    
+    } 
   });
-   
-}
-    getTweets(senObject.results[0].twitter_account);
-  });
-
-      senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
-    $.ajax(senList).done(function (response) {
-      $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
-      $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
-      console.log(response);
-      for(var i = 0; i < response.results[0].bills.length; i++){
-        var link = response.results[0].bills[i].govtrack_url;
-        var ID = "href" + i;
-        if(response.results[0].bills[i].bill_type == "s"){
-          $("#recent_bills").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
-          $("#" + ID).attr('href', link);
-        }
-        else{
-          $("#resolutions").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
-          $("#" + ID).attr('href', link);
-        }
-      }
-
-    });
-}
 
 //handles all firebasee account and database functions
 var accHandler = {
