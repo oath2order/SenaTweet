@@ -292,6 +292,7 @@ function produceSen(senId){
       $("#notcurrentlyused").append("<h6>Senator most cosponsored: N/A</h6>");
     } 
   });
+}
 
 //handles all firebasee account and database functions
 var accHandler = {
