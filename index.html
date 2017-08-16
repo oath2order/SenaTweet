@@ -3,8 +3,10 @@
 <head>
 
 <!--   Andy -->
-  <title>Senatweet</title>
+  <title>SenaTweets</title>
+  <link href="https://fonts.googleapis.com/css?family=IM+Fell+English:400i" rel="stylesheet"> 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="icon" href="https://amercustomconstruction.com/wp-content/uploads/2017/02/cropped-favicon.jpg" sizes="any" type="image/svg+xml">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="assets/css/mdb.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="assets/css/style.css">
@@ -67,13 +69,14 @@
   <nav class="navbar navbar-expand-lg navbar-dark indigo navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
+      <img src="http://www.fes.net/siteart/Flag-USA.png" alt="SenaTweets">
         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
           <span class="sr-only">Toggle navigation</span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Senatweet</a>
+        <a class="navbar-brand" href="#" id="title">SenaTweets</a>
       </div>
       <ul class="nav navbar-nav navbar-left">
         <li><a href="#">Find a Senator</a></li>
@@ -185,7 +188,7 @@
             <div class="col-sm-4 panel" id="cardlocation"></div>
             <div class="col-sm-8 panel">
               <div class="row">
-                <div class=" panel" id="notcurrentlyused"><u><b>Basic Information:</b></u></div>
+                <div class="panel" id="notcurrentlyused"><u><b>Basic Information:</b></u></div>
               </div>
               <div class="row">
                 <div class="panel" id="sub_commitees"><u><b>Current Committee Memberships:</b></u><ul></ul></div>
@@ -194,12 +197,13 @@
                 <div class="panel" id="recent_bills"><u><b>Recent Bills Sponsored:</b></u></div>
               </div>
               <div class="row">
-                <div class="panel" id="resolutions"><u><b>Further Resolutions:</b></u></div>
+                <div id="resolutions"><u><b>Further Resolutions:</b></u></div>
               </div>
             </div>
           </div>
-          <div class="row">
+          <div class="row"><h4><u><b>NEW YORK TIMES</b></u></h4>
             <div class="col-sm-6 panel" id="newsdisplay"></div>
+            <div class="col-sm-6 panel" id="tweetsArea"></div>
             <div class="col-sm-6 panel" id="twitterArea"><a class="twitter-timeline">Tweets by @</a></div>
           </div>
         </div>

@@ -89,6 +89,8 @@ var searchMethod = {
         $.each(senMem, function(i) {
           if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
+            state = senMem[i].state;
+            party = senMem[i].party;
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
@@ -96,6 +98,8 @@ var searchMethod = {
         $.each(senMem, function(i) {
           if (senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
+            state = senMem[i].state;
+            party = senMem[i].party;
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
@@ -103,6 +107,8 @@ var searchMethod = {
         $.each(senMem, function(i) {
           if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase() && senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
+            state = senMem[i].state;
+            party = senMem[i].party;
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
@@ -177,13 +183,14 @@ var searchMethod = {
 }
 
 function produceSen(senId){
+
   senList.url = senURL + senEndpoint + "/" + senId + ".json";
   $('#senmodal').modal('show');
   $("#cardlocation").empty();
   $("#newsdisplay").empty();
   $("#follow").val(senId);
   $.ajax(senList).done(function (response) {
-    //console.log(response);
+    console.log(response);
     senObject = response;
     $("#notcurrentlyused").html("<u><b>Basic Information:</b></u>");
     $("#sub_commitees").html("<u><b>Current Committee Memberships:</b></u><ul></ul>");
@@ -206,9 +213,24 @@ function produceSen(senId){
 
     $("#cardlocation").append('<div class="card"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
     senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
-    senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</h4></div></div>');
+    senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</br>(' + party + '-' + state + ')</h4></div></div>');
     timesHandler.apiCall(senObject.results[0].first_name, senObject.results[0].last_name);
-    getTweets(senObject.results[0].twitter_account);
+    
+    if(senId == "P000603"){
+      getTweets("RandPaul");
+      analyzeTweets("RandPaul");
+    }
+    else if(senId == "C001075"){
+      getTweets("BillCassidy");
+      analyzeTweets("BillCassidy");
+    }
+
+    else{
+      getTweets(senObject.results[0].twitter_account);
+      analyzeTweets(senObject.results[0].twitter_account);
+    }
+
+   
   });
 
   senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
@@ -437,6 +459,36 @@ $('#Signin').tab('show')
 window.onload = function() {
   // accHandler.initApp();
 };
+
+function analyzeTweets(handle){
+  var hashtags = [];
+  var mentions = [];
+  var queryURL = "https://shrouded-dawn-80649.herokuapp.com/" + "?q=" + handle;
+
+  $.ajax({
+    url: queryURL,
+    method: "GET"
+  }).done(function(response){
+    console.log(response);
+
+    for(var i = 0; i < response.tweets.length; i++){ 
+      if(response.tweets[i].entities.hashtags.length != 0){
+        for(var j = 0; j < response.tweets[i].entities.hashtags.length; j++){
+          hashtags = response.tweets[i].entities.hashtags[j];
+        }
+      }
+
+      if(response.tweets[i].entities.user_mentions.length != 0){
+        for(var j = 0; j < response.tweets[i].entities.user_mentions.length; j++){
+          mentions = response.tweets[i].entities.user_mentions[j];
+          console.log(mentions);
+        }
+      }
+    }
+  
+  $("#tweetsArea").prepend("<p># of hashtags this week: " + hashtags + " # of mentions this week: " +  mentions + "</p><br>");
+  });
+}
 
 function getTweets(handle){
   twttr.widgets.createTimeline({sourceType: "profile", screenName: handle}, document.getElementById('twitterArea'),{tweetLimit: 5});
