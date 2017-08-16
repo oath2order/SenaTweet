@@ -89,6 +89,8 @@ var searchMethod = {
         $.each(senMem, function(i) {
           if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
+            state = senMem[i].state;
+            party = senMem[i].party;
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
@@ -96,6 +98,8 @@ var searchMethod = {
         $.each(senMem, function(i) {
           if (senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
+            state = senMem[i].state;
+            party = senMem[i].party;
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
@@ -103,6 +107,8 @@ var searchMethod = {
         $.each(senMem, function(i) {
           if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase() && senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
+            state = senMem[i].state;
+            party = senMem[i].party;
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
@@ -187,7 +193,6 @@ function produceSen(senId){
   $("#newsdisplay").empty();
   $("#follow").val(senId);
   $.ajax(senList).done(function (response) {
-    //console.log(response);
     senObject = response;
     $("#notcurrentlyused").html("<u><b>Basic Information:</b></u>");
     $("#sub_commitees").html("<u><b>Current Committee Memberships:</b></u><ul></ul>");
@@ -210,8 +215,86 @@ function produceSen(senId){
 
     $("#cardlocation").append('<div class="card"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
     senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
-    senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</h4></div></div>');
+    senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</br>(' + party + '-' + state + ')</h4></div></div>');
     timesHandler.apiCall(senObject.results[0].first_name, senObject.results[0].last_name);
+    
+    if(senId == "P000603"){
+      getTweets("RandPaul");
+      analyzeTweets("RandPaul");
+    }
+    else if(senId == "C001075"){
+      getTweets("BillCassidy");
+      analyzeTweets("BillCassidy");
+    }
+
+    else{
+      getTweets(senObject.results[0].twitter_account);
+      analyzeTweets(senObject.results[0].twitter_account);
+    }
+
+   
+  });
+
+  senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
+  $.ajax(senList).done(function (response) {
+    $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
+    $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
+    //console.log(response);
+    for(var i = 0; i < response.results[0].bills.length; i++){
+      var link = response.results[0].bills[i].govtrack_url;
+      var ID = "href" + i;
+      if(response.results[0].bills[i].bill_type == "s"){
+        $("#recent_bills").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+        $("#" + ID).attr('href', link);
+      }
+      else{
+        $("#resolutions").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+        $("#" + ID).attr('href', link);
+      }
+    }
+  });
+
+  senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/cosponsored.json";
+  $.ajax(senList).done(function (response) {
+    //console.log(response);
+    var senators = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
+    var counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    var topSenator = "";
+    var maxCount = 0;
+    var location = 0;
+
+
+    for(var i = 0; i < response.results[0].bills.length; i++){
+      for(var j = 0; j < senators.length; j++){
+        if(senators[j] == ""){
+          senators[j] = response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")";
+          counter[j] = 1;
+          break;
+        }
+
+        else if(senators[j] == response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")"){
+          counter[j]++;
+          break;
+        }
+      }
+    }
+
+    for(var k = 0; k < senators.length; k++){
+      if(counter[k] > maxCount){
+        maxCount = counter[k];
+        location = k;
+      }
+    }
+    if(maxCount > 1){
+      $("#notcurrentlyused").append("<h6>Senator most cosponsored: " + senators[location] + " (" + maxCount + ")</h6>");
+    }
+    else{
+      $("#notcurrentlyused").append("<h6>Senator most cosponsored: N/A</h6>");
+    }
+    
+  });
+   
+}
     getTweets(senObject.results[0].twitter_account);
   });
 
@@ -325,6 +408,7 @@ var accHandler = {
   }
 };
 
+
 //handles API calls for the NYTimes
 var timesHandler = {
   apiCall: function(firstName, lastName) {
@@ -391,19 +475,60 @@ $("#search-results").on("click", ".card", function() {
   produceSen(this.id);
   $("#twitterArea").html(""); // clears twitter area, or it will continually append tweets
 });
-document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
-document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
-document.getElementById('sign-out').addEventListener('click', accHandler.signOut, false);
-document.getElementById('follow').addEventListener('click', accHandler.senFollow, false);
+// document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
+// document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
+// document.getElementById('sign-out').addEventListener('click', accHandler.signOut, false);
+// document.getElementById('follow').addEventListener('click', accHandler.senFollow, false);
 $('#Signup').tab('show')
 $('#Signin').tab('show')
 window.onload = function() {
-  accHandler.initApp();
+  // accHandler.initApp();
 };
 
-function getTweets(handle) {
-  twttr.widgets.createTimeline({ sourceType: "profile", screenName: handle }, document.getElementById('twitterArea'), { tweetLimit: 5 });
+function analyzeTweets(handle){
+  var hashtags = [];
+  var mentions = [];
+  var queryURL = "https://shrouded-dawn-80649.herokuapp.com/" + "?q=" + handle;
+
+  $.ajax({
+    url: queryURL,
+    method: "GET"
+  }).done(function(response){
+    console.log(response);
+
+    for(var i = 0; i < response.tweets.length; i++){ 
+      if(response.tweets[i].entities.hashtags.length != 0){
+        for(var j = 0; j < response.tweets[i].entities.hashtags.length; j++){
+          hashtags = response.tweets[i].entities.hashtags[j];
+        }
+      }
+
+      if(response.tweets[i].entities.user_mentions.length != 0){
+        for(var j = 0; j < response.tweets[i].entities.user_mentions.length; j++){
+          mentions = response.tweets[i].entities.user_mentions[j];
+          console.log(mentions);
+        }
+      }
+    }
+  
+  $("#tweetsArea").prepend("<p># of hashtags this week: " + hashtags + " # of mentions this week: " +  mentions + "</p><br>");
+  });
 }
+
+$(document).ready(function(){
+  $("ul.tabs").tabs();
+
+  if($('ul.tabs#basic').tabs('select_tab', '#notcurrentlyused')){
+    $("#notcurrentlyused").attr("visibility", "visible");
+  };
+  $('ul.tabs#bills').tabs('select_tab', '#recent_bills');
+  $('ul.tabs#tweets').tabs('select_tab', '#twitterArea');
+  $('ul.tabs#other').tabs('select_tab', '#newsdisplay');
+});
+
+function getTweets(handle){
+  twttr.widgets.createTimeline({sourceType: "profile", screenName: handle}, document.getElementById('twitterArea'),{tweetLimit: 5});
+};
 
 window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],
