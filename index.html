@@ -1,8 +1,7 @@
 <!DOCTYPE html>
+
 <head>
-
-<!--   Andy -->
-
+  <!--   Andy -->
   <title>Senatweet</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -68,13 +67,12 @@
   <div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
-        <div class="modal-header">
-          <button class="close" data-dismiss="modal" aria-label="Close"></button>
-        </div>
         <div class="modal-body">
-          You have successfully signed <span id="success-span"></span>.
+          <h5 id="success-span"></h5>
         </div>
-        <div class="modal-footer"></div>
+        <div class="modal-footer">
+          <button type class="btn btn-primary" data-dismiss="modal" id="close-modals">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -183,6 +181,7 @@
         </ul>
       </div>
       <button type="submit" class="btn btn-default" id="search-button">Submit</button>
+      <span id="input-errors"></span>
     </div>
     <div class="row" id="search-results">
     </div>
@@ -198,11 +197,12 @@
             <div class="col-sm-4 panel" id="cardlocation"></div>
             <div class="col-sm-8 panel">
               <div class="row">
-
                 <div class=" panel" id="notcurrentlyused"><u><b>Basic Information:</b></u></div>
               </div>
               <div class="row">
-                <div class="panel" id="sub_commitees"><u><b>Current Committee Memberships:</b></u><ul></ul></div>
+                <div class="panel" id="sub_commitees"><u><b>Current Committee Memberships:</b></u>
+                  <ul></ul>
+                </div>
               </div>
               <div class="row">
                 <div class="panel" id="recent_bills"><u><b>Recent Bills Sponsored:</b></u></div>

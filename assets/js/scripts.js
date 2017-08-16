@@ -89,6 +89,7 @@ var searchMethod = {
   //these are the functions for our search types, the search by name function ended up being huge;
 
   searchByName: function() {
+    $("#input-errors").text("");
     this.firstName = this.inputValidation($("#first-name-bar").val().trim());
     this.lastName = this.inputValidation($("#last-name-bar").val().trim());
     senList.url = senURL + "115/Senate/members.json";
@@ -101,6 +102,9 @@ var searchMethod = {
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
+        if (searchMethod.senIdArr.length == 0){
+          $("#input-errors").text("Your search did not yield any results.");
+        }
       } else if (searchMethod.lastName !== undefined && searchMethod.firstName == undefined) {
         $.each(senMem, function(i) {
           if (senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
@@ -108,6 +112,9 @@ var searchMethod = {
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
+        if (searchMethod.senIdArr.length == 0){
+          $("#input-errors").text("Your search did not yield any results.");
+        }
       } else if (searchMethod.firstName !== undefined && searchMethod.lastName !== undefined) {
         $.each(senMem, function(i) {
           if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase() && senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
@@ -115,8 +122,11 @@ var searchMethod = {
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
+        if (searchMethod.senIdArr.length == 0){
+          $("#input-errors").text("Your search did not yield any results.");
+        }
       } else if (searchMethod.firstName == undefined && searchMethod.lastName == undefined) {
-        console.log("your field is either empty or invalid, please try again");
+        $("#input-errors").text("Your field is either empty or invalid, please try again.");
       }
     });
   },
@@ -266,11 +276,23 @@ var accHandler = {
     var password = $("#password-signup").val();
     //handles error returning
     if (email.length < 4) {
-      alert('Please enter an email address.');
+      $("#success-span").text('Please enter an email address.');
+      $("#close-modals").hide();
+      $("#success-modal").modal('show');
+      setTimeout(function(){
+        $("#success-modal").modal('hide');
+        $("#loginmodal").modal('show');
+      }, 1500);
       return;
     }
     if (password.length < 4) {
-      alert('Please enter a password.');
+      $("#success-span").text('Please enter a password.');
+      $("#close-modals").hide();
+      $("#success-modal").modal('show');
+      setTimeout(function(){
+        $("#success-modal").modal('hide');
+        $("#loginmodal").modal('show');
+      }, 1500);
       return;
     }
     // Sign in with email and pass.
@@ -281,9 +303,19 @@ var accHandler = {
       var errorMessage = error.message;
       // [START_EXCLUDE]
       if (errorCode == 'auth/weak-password') {
-        alert('The password is too weak.');
+        $("#success-span").text('The password is too weak.');
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
       } else {
-        alert(errorMessage);
+        $("#success-span").text(errorMessage);
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
       }
       console.log(error);
       // [END_EXCLUDE]
@@ -291,9 +323,9 @@ var accHandler = {
     // [END createwithemail]
     console.log(firebase.auth().currentUser);
     //create modal alert
-    $("#loginmodal").hide();
-    $("#success-span").text("in");
-    $("#success-modal").show();
+    $("#success-span").text("Account creation successful. Welcome.");
+    $("#close-modals").show();
+    $("#success-modal").modal('show');
   },
   //handles user sign in functionality
   signIn: function() {
@@ -305,18 +337,28 @@ var accHandler = {
       var errorMessage = error.message;
       // [START_EXCLUDE]
       if (errorCode === 'auth/wrong-password') {
-        alert('Wrong password.');
+        $("#success-span").text('Wrong password.');
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
       } else {
-        alert(errorMessage);
+        $("#success-span").text(errorMessage);
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
       }
       console.log(error);
       // [END_EXCLUDE]
     })
     console.log(firebase.auth().currentUser);
     //create modal alert
-    $("#loginmodal").hide();
-    $("#success-span").text("in");
-    $("#success-modal").show();
+    $("#success-span").text("You have successfully signed in.");
+    $("#close-modals").show();
+    $("#success-modal").modal('show');
   },
   //handles user sign out functionality
   signOut: function() {
@@ -325,9 +367,9 @@ var accHandler = {
     accHandler.userArr = [];
     $("#search-results").empty();
     //create modal alert
-    $("#loginmodal").hide();
-    $("#success-span").text("out");
-    $("#success-modal").show();
+    $("#success-span").text("You have successfully signed out.");
+    $("#close-modals").show();
+    $("#success-modal").modal('show');
   },
   //handles user sign out functionality
   initApp: function() {
@@ -404,6 +446,10 @@ $("#party-menu li a").on("click", function() {
 });
 $("#openmodal").on("click", function() {
   $('#loginmodal').modal('show');
+});
+$("#close-modals").on("click", function() {
+  $("#success-modal").modal('hide');
+  $('#loginmodal').modal('hide');
 });
 $("#showfaves").on("click", function() {
   accHandler.buildSenList();
