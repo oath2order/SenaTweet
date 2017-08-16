@@ -37,10 +37,9 @@ body{
   color: indigo;
 }
 
-#recent_bills, #notcurrentlyused{
+#recent_bills, #notcurrentlyused, #twitterArea, .twitter-timeline, #newsdisplay{
   padding-bottom: 10px;
-  float: left;
-  
+  visibility: hidden;
 }
 
 #follow{
@@ -55,6 +54,7 @@ body{
   font-weight: bolder;
 }
 
+
 li {
   display: inline;
   float: left;
@@ -64,7 +64,7 @@ li {
 .navbar img{
   position: absolute;
   z-index: -1;
-  left: 275px;
+  left: 225px;
   height: 65px; 
   width: 200px;
   padding: 0;

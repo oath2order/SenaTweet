@@ -183,7 +183,6 @@ var searchMethod = {
 }
 
 function produceSen(senId){
-
   senList.url = senURL + senEndpoint + "/" + senId + ".json";
   $('#senmodal').modal('show');
   $("#cardlocation").empty();
@@ -491,8 +490,11 @@ function analyzeTweets(handle){
 }
 
 $(document).ready(function(){
-  $('ul.tabs').tabs();
-  $('ul.tabs#basic').tabs('select_tab', '#notcurrentlyused');
+  $("ul.tabs").tabs();
+
+  if($('ul.tabs#basic').tabs('select_tab', '#notcurrentlyused')){
+    $("#notcurrentlyused").attr("visibility", "visible");
+  };
   $('ul.tabs#bills').tabs('select_tab', '#recent_bills');
   $('ul.tabs#tweets').tabs('select_tab', '#twitterArea');
   $('ul.tabs#other').tabs('select_tab', '#newsdisplay');
@@ -518,3 +520,4 @@ window.twttr = (function(d, s, id) {
 
   return t;
 }(document, "script", "twitter-wjs"));
+
