@@ -172,10 +172,10 @@ var searchMethod = {
     }
   },
   renderSearch: function(firstname, lastname, party, state, id) {
-    $("#search-results").append('<div class="card col-sm-3" id="' + id +
+    $("#search-results").append('<div class="card view overlay col-sm-3 hm-blue-slight hm-zoom" id="' + id +
       '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
       id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
-      firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div></div>')
+      firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div><a href="#"><div class="mask"></div></a></div>')
   }
 
 }
@@ -261,8 +261,8 @@ var accHandler = {
   },
   //creates user when sign up button is pressed
   createUser: function() {
-    var email = $("#email-signup").val();
-    var password = $("#password-signup").val();
+    var email = $("#email-signup").val().trim();
+    var password = $("#password-signup").val().trim();
     //handles error returning
     if (email.length < 4) {
       alert('Please enter an email address.');
