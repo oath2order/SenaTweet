@@ -112,7 +112,7 @@ var searchMethod = {
     });
   },
   searchByState: function() {
-    this.state = $("#state-bar").text();
+    this.state = $("#state-bar").val();
     console.log(this.state);
     this.senList.url = this.senURL + "members/senate/" + this.state + "/current.json";
     if(this.state !== "States"){
@@ -192,7 +192,7 @@ function produceSen(senId){
   });
 }
 
-handles all firebasee account and database functions
+//handles all firebasee account and database functions
 var accHandler = {
   //user and database object variables
   userDatabase : firebase.database(),
