@@ -40,29 +40,38 @@ var searchMethod = {
 
   //there are functions added for every button for every search type we are doing
   activateNameButton: function(button) {
+    $("#first-name-bar").val("");
+    $("#last-name-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
     $("#states").hide();
     $("#party").hide();
     $("#first-name").show();
     $("#last-name").show();
+    $("#search-button").show();
   },
 
   activateStatesButton: function(button) {
+    $("#state-bar").text("States");
+    $("#state-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
     $("#first-name").hide();
     $("#last-name").hide();
     $("#party").hide();
+    $("#search-button").hide();
     $("#states").show();
   },
 
   activatePartyButton: function(button) {
+    $("#party-bar").text("Party");
+    $("#party-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
     $("#first-name").hide();
     $("#last-name").hide();
     $("#states").hide();
+    $("#search-button").hide();
     $("#party").show();
   },
 
@@ -115,35 +124,27 @@ var searchMethod = {
     this.state = $("#state-bar").val();
     console.log(this.state);
     senList.url = senURL + "members/senate/" + this.state + "/current.json";
-    if (this.state !== "") {
-      $.ajax(senList).done(function(response) {
-        var senMem = response.results;
-        $.each(senMem, function(i) {
-          searchMethod.senIdArr.push(senMem[i].id);
-          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, searchMethod.state, senMem[i].id);
-        });
+    $.ajax(senList).done(function(response) {
+      var senMem = response.results;
+      $.each(senMem, function(i) {
+        searchMethod.senIdArr.push(senMem[i].id);
+        searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, searchMethod.state, senMem[i].id);
       });
-    } else {
-      console.log("specify a state first");
-    }
+    });
   },
   searchByParty: function() {
     this.party = $("#party-bar").val();
     console.log(this.party);
     senList.url = senURL + "115/Senate/members.json";
-    if (this.party !== "") {
-      $.ajax(senList).done(function(response) {
-        var senMem = response.results[0].members;
-        $.each(senMem, function(i) {
-          if (senMem[i].party == searchMethod.party) {
-            searchMethod.senIdArr.push(senMem[i].id);
-            searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
-          }
-        });
+    $.ajax(senList).done(function(response) {
+      var senMem = response.results[0].members;
+      $.each(senMem, function(i) {
+        if (senMem[i].party == searchMethod.party) {
+          searchMethod.senIdArr.push(senMem[i].id);
+          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
+        }
       });
-    } else{
-      console.log("specify a party first");
-    }
+    });
   },
   displayFavorites: function(senArr) {
     $("#search-results").empty();
@@ -289,6 +290,10 @@ var accHandler = {
     });
     // [END createwithemail]
     console.log(firebase.auth().currentUser);
+    //create modal alert
+    $("#loginmodal").hide();
+    $("#success-span").text("in");
+    $("#success-modal").show();
   },
   //handles user sign in functionality
   signIn: function() {
@@ -308,6 +313,10 @@ var accHandler = {
       // [END_EXCLUDE]
     })
     console.log(firebase.auth().currentUser);
+    //create modal alert
+    $("#loginmodal").hide();
+    $("#success-span").text("in");
+    $("#success-modal").show();
   },
   //handles user sign out functionality
   signOut: function() {
@@ -315,12 +324,22 @@ var accHandler = {
     accHandler.uid = "";
     accHandler.userArr = [];
     $("#search-results").empty();
+    //create modal alert
+    $("#loginmodal").hide();
+    $("#success-span").text("out");
+    $("#success-modal").show();
   },
   //handles user sign out functionality
   initApp: function() {
     firebase.auth().onAuthStateChanged(function(user) {
-      accHandler.uid = user.uid;
-      accHandler.buildSenList();
+      if(user !== null){
+        accHandler.uid = user.uid;
+        accHandler.buildSenList();
+        //add if statements for if(accHandler.uid == undefined) and hide/show "senators I follow" button and login/signout button
+        $("#showfaves").show();
+      } else if (user == null) {
+        $("#showfaves").hide();
+      }
     });
   }
 };
@@ -367,8 +386,9 @@ $("#states-button").on("click", function() {
 });
 
 $("#states-menu li a").on("click", function() {
-  $("#state-bar").text($(this).text())
+  $("#state-bar").text($(this).text());
   $("#state-bar").val($(this).attr("value"));
+  searchMethod.setSenId();
 });
 
 $("#search-button").on("click", function() {
@@ -378,8 +398,9 @@ $("#party-button").on("click", function() {
   searchMethod.activatePartyButton(this);
 });
 $("#party-menu li a").on("click", function() {
-  $("#party-bar").text($(this).text())
+  $("#party-bar").text($(this).text());
   $("#party-bar").val($(this).attr("value"));
+  searchMethod.setSenId();
 });
 $("#openmodal").on("click", function() {
   $('#loginmodal').modal('show');

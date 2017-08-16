@@ -4,6 +4,7 @@
 <!--   Andy -->
 
   <title>Senatweet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="assets/css/mdb.css" rel="stylesheet">
@@ -64,6 +65,16 @@
     <!-- /.modal-dialog -->
   </div>
   <!-- /.modal -->
+  <div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          You have successfully signed <span id="success-span"></span>.
+          <button class="close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+  </div>
   <nav class="navbar navbar-expand-lg navbar-dark indigo navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
@@ -76,8 +87,7 @@
         <a class="navbar-brand" href="#">Senatweet</a>
       </div>
       <ul class="nav navbar-nav navbar-left">
-        <li><a href="#">Find a Senator</a></li>
-        <li><a href="#" id="showfaves">Find My Senators</a></li>
+        <li><a href="#" id="showfaves">Senators I Follow</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#" id="openmodal">Login</a></li>
