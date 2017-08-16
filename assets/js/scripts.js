@@ -490,9 +490,17 @@ function analyzeTweets(handle){
   });
 }
 
+$(document).ready(function(){
+  $('ul.tabs').tabs();
+  $('ul.tabs#basic').tabs('select_tab', '#notcurrentlyused');
+  $('ul.tabs#bills').tabs('select_tab', '#recent_bills');
+  $('ul.tabs#tweets').tabs('select_tab', '#twitterArea');
+  $('ul.tabs#other').tabs('select_tab', '#newsdisplay');
+});
+
 function getTweets(handle){
   twttr.widgets.createTimeline({sourceType: "profile", screenName: handle}, document.getElementById('twitterArea'),{tweetLimit: 5});
-}
+};
 
 window.twttr = (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0],

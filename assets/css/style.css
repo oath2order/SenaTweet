@@ -37,20 +37,34 @@ body{
   color: indigo;
 }
 
-#sub_commitees, #recent_bills, #notcurrentlyused{
+#recent_bills, #notcurrentlyused{
   padding-bottom: 10px;
+  float: left;
   
 }
 
 #follow{
   background-color: #2BBBAD;
   color: white;
+  margin: 0;
+}
+
+#basic, #recent, #tweets, #other{
+  margin: 10px 0px 10px 80px;
+  font-size: 2em;
+  font-weight: bolder;
+}
+
+li {
+  display: inline;
+  float: left;
+  margin: 10px;
 }
 
 .navbar img{
   position: absolute;
   z-index: -1;
-  left: 225px;
+  left: 275px;
   height: 65px; 
   width: 200px;
   padding: 0;
