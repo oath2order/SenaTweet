@@ -189,21 +189,24 @@
               <div class="col s12">
                 <ul class="tabs tabs-fixed-width">
                   <li><button type="button" class="btn btn-secondary" id="follow">Follow Senator</button></li>
-                  <li class="tab col s3" id="basic"><a class="active" href="#notcurrentlyused">Info</a></li>
+                  <li class="tab col s3" id="basic"><a href="#notcurrentlyused">Info</a></li>
                   <li class="tab col s3" id="recent"><a href="#recent_bills">Bills</a></li>
                   <li class="tab col s3" id="tweets"><a href="#twitterArea">Tweets</a></li>
-                  <li class="tab col s3" id="other"><a href="#newsdisplay">Other</a></li>
+                  <li class="tab col s3" id="other"><a href="#newsdisplay">Articles</a></li>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="modal-body">
-            <div class="row">
-              <div id="notcurrentlyused" class="col s12"><u><b>Basic Information:</b></u></div>
-              <div id="recent_bills" class="col s12"><u><b>Recent Bills Sponsored:</b></u></div>
-              <div id="twitterArea" class="col s12"><!-- <a class="twitter-timeline">Tweets by @ --></a></div>
-              <div id="newsdisplay" class="col s12">Recent NYT Articles</div>
+          <div class="row">
+            <div class="col-sm-4" id="cardlocation"></div>
+            <div class="col-sm-8" id="basic_info">
+              <div class="row" id="notcurrentlyused"><u><b>Basic Information:</b></u></div><br>
+              <div class="row" id="sub_commitees"><u><b>Current Committee Memberships:</b></u></div>
             </div>
+            <div class="col-sm-12" id="recent_bills"><u><b>Recent Bills Sponsored:</b></u></div>
+            <div class="col-sm-12" id="resolutions"><u><b>Further Resolutions:</b></u></div>
+            <div class="col-sm-12" id="twitterArea"><a class="twitter-timeline">Tweets by @</a></div>
+            <div class="col-sm-12" id="newsdisplay"><u><b>Recent New York Times Articles:</b></u></div>
           </div>
         </div>
       </div>
@@ -225,7 +228,7 @@
                 <div class="panel" id="recent_bills"><u><b>Recent Bills Sponsored:</b></u></div>
               </div>
               <div class="row">
-                <div id="resolutions"><u><b>Further Resolutions:</b></u></div>
+                
               </div>
             </div>
           </div> -->

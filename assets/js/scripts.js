@@ -1,7 +1,7 @@
 //api params
 var senEndpoint = "members";
 var senURL = "https://api.propublica.org/congress/v1/";
-var senList   = {
+var senList = {
   "async": true,
   "crossDomain": true,
   "url": " ",
@@ -198,15 +198,15 @@ function produceSen(senId){
     $("#notcurrentlyused").append("<h6>Current term end date: " + senObject.results[0].roles[0].end_date + "</h6>");
     $("#notcurrentlyused").append("<h6>Phone number: " + senObject.results[0].roles[0].phone + "</h6>");
     $("#notcurrentlyused").append("<h6>Fax number: " + senObject.results[0].roles[0].fax + "</h6>");
+    $("#notcurrentlyused").append("<h6>Website: <a href='" + senObject.results[0].url + "'>" + senObject.results[0].url + "</a></h6>");
     // $("#notcurrentlyused").append("<h6>Bills sponsored: " + senObject.results[0].roles[0].bills_sponsored + "</h6>");
     // $("#notcurrentlyused").append("<h6>Bills co-sponsored: " + senObject.results[0].roles[0].bills_cosponsored + "</h6>");
     $("#notcurrentlyused").append("<h6>Most recent vote: " + senObject.results[0].most_recent_vote + "</h6>");
     $("#notcurrentlyused").append("<h6>Missed vote percentage: " + senObject.results[0].roles[0].missed_votes_pct + "%</h6>");
     $("#notcurrentlyused").append("<h6>Votes with party percentage: " + senObject.results[0].roles[0].votes_with_party_pct + "%</h6>");
 
-    
     for(var i = 0; i < senObject.results[0].roles[0].committees.length; i++){
-      $("#sub_commitees").append("<li>" + senObject.results[0].roles[0].committees[i].name +  " (" + senObject.results[0].roles[0].committees[i].code + ")</li>");
+      $("#sub_commitees").append("<h6> - " + senObject.results[0].roles[0].committees[i].name +  " (" + senObject.results[0].roles[0].committees[i].code + ")</h6>");
     }
 
 
@@ -228,25 +228,25 @@ function produceSen(senId){
       getTweets(senObject.results[0].twitter_account);
       analyzeTweets(senObject.results[0].twitter_account);
     }
-
-   
   });
 
   senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
   $.ajax(senList).done(function (response) {
-    $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
-    $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
+    // $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
+    // $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
     //console.log(response);
     for(var i = 0; i < response.results[0].bills.length; i++){
       var link = response.results[0].bills[i].govtrack_url;
       var ID = "href" + i;
       if(response.results[0].bills[i].bill_type == "s"){
-        $("#recent_bills").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+        $("#recent_bills").append("<h6> - <a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</h6>");
         $("#" + ID).attr('href', link);
+        $("#" + ID).attr('target', '_blank');
       }
       else{
-        $("#resolutions").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+        $("#resolutions").append("<h6><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</h6>");
         $("#" + ID).attr('href', link);
+        $("#" + ID).attr('target', '_blank');
       }
     }
   });
@@ -492,12 +492,54 @@ function analyzeTweets(handle){
 $(document).ready(function(){
   $("ul.tabs").tabs();
 
-  if($('ul.tabs#basic').tabs('select_tab', '#notcurrentlyused')){
-    $("#notcurrentlyused").attr("visibility", "visible");
-  };
-  $('ul.tabs#bills').tabs('select_tab', '#recent_bills');
-  $('ul.tabs#tweets').tabs('select_tab', '#twitterArea');
-  $('ul.tabs#other').tabs('select_tab', '#newsdisplay');
+  $('#basic').click(function(){
+    $("#recent_bills").css("display", "none");
+    $("#resolutions").css("display", "none");
+    $("#newsdisplay").css("display", "none");
+    $("#twitterArea").css("display", "none");
+    $(".twitter-timeline").css("display", "none");
+
+    $("#cardlocation").css("display", "inline");
+    $("#basic_info").css("display", "inline");
+
+  });
+
+  $('#recent').click(function(){
+    $("#cardlocation").css("display", "none");
+    $("#basic_info").css("display", "none");
+    $("#newsdisplay").css("display", "none");
+    $("#twitterArea").css("display", "none");
+    $(".twitter-timeline").css("display", "none");
+
+    $("#recent_bills").css("display", "inline");
+    $("#resolutions").css("display", "inline");
+
+  });
+
+  $('#tweets').click(function(){
+    $("#cardlocation").css("display", "none");
+    $("#basic_info").css("display", "none");
+    $("#recent_bills").css("display", "none");
+    $("#resolutions").css("display", "none");
+    $("#newsdisplay").css("display", "none");
+
+    $("#twitterArea").css("display", "inline");
+    $(".twitter-timeline").css("display", "inline");
+
+  });
+
+  $('#other').click(function(){
+    $("#cardlocation").css("display", "none");
+    $("#basic_info").css("display", "none");
+    $("#recent_bills").css("display", "none");
+    $("#resolutions").css("display", "none");
+    $("#twitterArea").css("display", "none");
+    $(".twitter-timeline").css("display", "none");
+
+    $("#newsdisplay").css("display", "inline");
+
+  });
+
 });
 
 function getTweets(handle){
