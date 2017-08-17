@@ -145,7 +145,7 @@ var searchMethod = {
         var senMem = response.results;
         $.each(senMem, function(i) {
           searchMethod.senIdArr.push(senMem[i].id);
-          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
+          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, searchMethod.state, senMem[i].id);
         });
       });
     } else{
