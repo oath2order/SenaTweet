@@ -37,9 +37,65 @@ body{
   color: indigo;
 }
 
-#recent_bills, #notcurrentlyused, #twitterArea, .twitter-timeline, #newsdisplay{
-  padding-bottom: 10px;
-  visibility: hidden;
+#cardlocation{
+  clear: both;
+  margin: 30px 0 20px 0;
+}
+
+#basic_info{
+  margin: 30px 0 30px 0;
+}
+
+#recent_bills{
+  clear: both;
+  margin: 30px 0 0 30px;
+  width: 85%;
+}
+
+#resolutions{
+  margin: 10px 0 30px 30px;
+  width: 85%;
+}
+
+#twitterArea{
+  margin: 0 0 0 35px;
+}
+
+#newstitle{
+  margin: 10px 0 5px 0;
+  font-family: 'UnifrakturMaguntia', cursive;
+  color: black;
+  font-size: 4em;
+  font-weight: bolder;
+  text-align: center;
+}
+
+#newsdisplay{
+  margin: 0 0 20px 45px;
+  width: 90%;
+  border: 4px dashed black;
+  background-color: #DCDCDC;
+}
+
+#newsdisplay p{
+  font-style: italic;
+}
+
+.snippet{
+  background-color: #DCDCDC;
+}
+
+#tweetArea{
+  border-radius: 5px;
+  background-color: SkyBlue;
+  width: 90%;
+  margin: 10px 10px 10px 45px;
+  font-weight: bolder;
+  font-style: italic;
+}
+
+#recent_bills, #twitterArea, #tweetArea, #newsdisplay, #newstitle, #resolutions, .twitter-timeline{
+  display: none;
 }
 
 #follow{
@@ -53,7 +109,6 @@ body{
   font-size: 2em;
   font-weight: bolder;
 }
-
 
 li {
   display: inline;
@@ -89,9 +144,14 @@ li {
 body > nav{
   height: 85px;
 }
+.modal-content{
+  height: auto;
+}
+
 #welcome{
   display: none;
 }
 #sign-out{
   display: none;
 }
+

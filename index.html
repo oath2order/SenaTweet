@@ -1,9 +1,11 @@
 <!DOCTYPE html>
+<head>
   <title>SenaTweets</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="assets/css/reset.css" >
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IM+Fell+English:400i"> 
+  <link href="https://fonts.googleapis.com/css?family=UnifrakturMaguntia" rel="stylesheet"> 
   <link rel="icon" href="https://amercustomconstruction.com/wp-content/uploads/2017/02/cropped-favicon.jpg" sizes="any" type="image/svg+xml">
 
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -208,44 +210,28 @@
                   <li class="tab col s3" id="basic"><a class="active" href="#notcurrentlyused">Info</a></li>
                   <li class="tab col s3" id="recent"><a href="#recent_bills">Bills</a></li>
                   <li class="tab col s3" id="tweets"><a href="#twitterArea">Tweets</a></li>
-                  <li class="tab col s3" id="other"><a href="#newsdisplay">Other</a></li>
+                  <li class="tab col s3" id="other"><a href="#newsdisplay">Articles</a></li>
                 </ul>
               </div>
             </div>
           </div>
-          <div class="modal-body">
-            <div class="row">
-              <div id="notcurrentlyused" class="col s12"><u><b>Basic Information:</b></u></div>
-              <div id="recent_bills" class="col s12"><u><b>Recent Bills Sponsored:</b></u></div>
-              <div id="twitterArea" class="col s12"><!-- <a class="twitter-timeline">Tweets by @ --></a></div>
-              <div id="newsdisplay" class="col s12">Recent NYT Articles</div>
+          <div class="row">
+            <div class="col-sm-4" id="cardlocation"></div>
+            <div class="col-sm-8" id="basic_info">
+              <div class="row" id="notcurrentlyused"><u><b>Basic Information:</b></u></div><br>
+              <div class="row" id="sub_commitees"><u><b>Current Committee Memberships:</b></u></div>
             </div>
+            <div class="col-sm-12" id="recent_bills"><u><b>Recent Bills Sponsored:</b></u></div>
+            <div class="col-sm-12" id="resolutions"><u><b>Further Resolutions:</b></u></div>
+            <div class="col-sm-12" id="tweetArea"></div>
+            <div class="col-sm-12" id="twitterArea"><a class="twitter-timeline"></a></div>
+            <div class="col-sm-12" id="newstitle"><u><b>New York Times Articles</b></u></div>
+            <div class="col-sm-12" id="newsdisplay"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-
-
-<!--           <div class="row">
-            <div class="col-sm-4 panel" id="cardlocation"></div>
-            <div class="col-sm-8 panel">
-              <div class="row">
-                <div class="panel" id="notcurrentlyused"></div>
-                <div id="resolutions"><u><b>Further Resolutions:</b></u></div>
-              </div>
-            </div>
-          </div> -->
-<!--           <div class="row"><h4><u><b>NEW YORK TIMES</b></u></h4>
-            <div class="col-sm-6 panel" id="newsdisplay"></div>
-            <div class="col-sm-6 panel" id="tweetsArea"></div>
-
-            <div class="col-sm-6 panel" id="twitterArea"><a class="twitter-timeline">Tweets by @</a></div>
-          </div>
-        </div>
-      </div>
-    </div> -->
     <!-- Modal -->
 </body>
 <script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
