@@ -53,18 +53,48 @@ body{
 }
 
 #resolutions{
-  margin: 10px 0 20px 30px;
+  margin: 10px 0 30px 30px;
   width: 85%;
 }
 
-#newsdisplay{
-  margin: 20px;
-  width: 80%;
-  text-align: center;
-  border: 1px solid black;
+#twitterArea{
+  margin: 0 0 0 35px;
 }
 
-#recent_bills, #twitterArea, #newsdisplay, #resolutions, .twitter-timeline{
+#newstitle{
+  margin: 10px 0 5px 0;
+  font-family: 'UnifrakturMaguntia', cursive;
+  color: black;
+  font-size: 4em;
+  font-weight: bolder;
+  text-align: center;
+}
+
+#newsdisplay{
+  margin: 0 0 20px 45px;
+  width: 90%;
+  border: 4px dashed black;
+  background-color: #DCDCDC;
+}
+
+#newsdisplay p{
+  font-style: italic;
+}
+
+.snippet{
+  background-color: #DCDCDC;
+}
+
+#tweetArea{
+  border-radius: 5px;
+  background-color: SkyBlue;
+  width: 90%;
+  margin: 10px 10px 10px 45px;
+  font-weight: bolder;
+  font-style: italic;
+}
+
+#recent_bills, #twitterArea, #tweetArea, #newsdisplay, #newstitle, #resolutions, .twitter-timeline{
   display: none;
 }
 

@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="assets/css/reset.css" >
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IM+Fell+English:400i"> 
+  <link href="https://fonts.googleapis.com/css?family=UnifrakturMaguntia" rel="stylesheet"> 
   <link rel="icon" href="https://amercustomconstruction.com/wp-content/uploads/2017/02/cropped-favicon.jpg" sizes="any" type="image/svg+xml">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <!--   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.min.css"> -->
@@ -189,7 +190,7 @@
               <div class="col s12">
                 <ul class="tabs tabs-fixed-width">
                   <li><button type="button" class="btn btn-secondary" id="follow">Follow Senator</button></li>
-                  <li class="tab col s3" id="basic"><a href="#notcurrentlyused">Info</a></li>
+                  <li class="tab col s3" id="basic"><a class="active" href="#notcurrentlyused">Info</a></li>
                   <li class="tab col s3" id="recent"><a href="#recent_bills">Bills</a></li>
                   <li class="tab col s3" id="tweets"><a href="#twitterArea">Tweets</a></li>
                   <li class="tab col s3" id="other"><a href="#newsdisplay">Articles</a></li>
@@ -205,8 +206,10 @@
             </div>
             <div class="col-sm-12" id="recent_bills"><u><b>Recent Bills Sponsored:</b></u></div>
             <div class="col-sm-12" id="resolutions"><u><b>Further Resolutions:</b></u></div>
-            <div class="col-sm-12" id="twitterArea"><a class="twitter-timeline">Tweets by @</a></div>
-            <div class="col-sm-12" id="newsdisplay"><u><b>Recent New York Times Articles:</b></u></div>
+            <div class="col-sm-12" id="tweetArea"></div>
+            <div class="col-sm-12" id="twitterArea"><a class="twitter-timeline"></a></div>
+            <div class="col-sm-12" id="newstitle"><u><b>New York Times Articles</b></u></div>
+            <div class="col-sm-12" id="newsdisplay"></div>
           </div>
         </div>
       </div>
