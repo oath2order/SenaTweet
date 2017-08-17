@@ -40,29 +40,38 @@ var searchMethod = {
 
   //there are functions added for every button for every search type we are doing
   activateNameButton: function(button) {
+    $("#first-name-bar").val("");
+    $("#last-name-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
     $("#states").hide();
     $("#party").hide();
     $("#first-name").show();
     $("#last-name").show();
+    $("#search-button").show();
   },
 
   activateStatesButton: function(button) {
+    $("#state-bar").text("States");
+    $("#state-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
     $("#first-name").hide();
     $("#last-name").hide();
     $("#party").hide();
+    $("#search-button").hide();
     $("#states").show();
   },
 
   activatePartyButton: function(button) {
+    $("#party-bar").text("Party");
+    $("#party-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
     $("#first-name").hide();
     $("#last-name").hide();
     $("#states").hide();
+    $("#search-button").hide();
     $("#party").show();
   },
 
@@ -80,6 +89,7 @@ var searchMethod = {
   //these are the functions for our search types, the search by name function ended up being huge;
 
   searchByName: function() {
+    $("#input-errors").text("");
     this.firstName = this.inputValidation($("#first-name-bar").val().trim());
     this.lastName = this.inputValidation($("#last-name-bar").val().trim());
     this.senList.url = this.senURL + "115/Senate/members.json";
@@ -94,6 +104,9 @@ var searchMethod = {
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
+        if (searchMethod.senIdArr.length == 0){
+          $("#input-errors").text("Your search did not yield any results.");
+        }
       } else if (searchMethod.lastName !== undefined && searchMethod.firstName == undefined) {
         $.each(senMem, function(i) {
           if (senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
@@ -103,6 +116,9 @@ var searchMethod = {
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
+        if (searchMethod.senIdArr.length == 0){
+          $("#input-errors").text("Your search did not yield any results.");
+        }
       } else if (searchMethod.firstName !== undefined && searchMethod.lastName !== undefined) {
         $.each(senMem, function(i) {
           if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase() && senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
@@ -112,8 +128,11 @@ var searchMethod = {
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
+        if (searchMethod.senIdArr.length == 0){
+          $("#input-errors").text("Your search did not yield any results.");
+        }
       } else if (searchMethod.firstName == undefined && searchMethod.lastName == undefined) {
-        console.log("your field is empty, please type something");
+        $("#input-errors").text("Your field is either empty or invalid, please try again.");
       }
     });
   },
@@ -136,6 +155,7 @@ var searchMethod = {
   searchByParty: function(){
     this.party = $("#party-bar").val();
     console.log(this.party);
+
     this.senList.url = this.senURL + "115/Senate/members.json";
     $.ajax(this.senList).done(function(response) {
       var senMem = response.results[0].members;
@@ -173,24 +193,37 @@ var searchMethod = {
       this.searchByParty();
     }
   },
-  renderSearch: function(firstname, lastname, party, state, id){
-    $("#search-results").append('<div class="card col-sm-3" id="' + id + 
-    '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
-    id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
-    firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div></div>')
+  renderSearch: function(firstname, lastname, party, state, id) {
+    if (party == "D"){
+      $("#search-results").append('<div class="card view overlay col-sm-3 hm-blue-slight hm-zoom" id="' + id +
+        '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
+        id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+        firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div><a href="#"><div class="mask"></div></a></div>');
+    }
+    if (party == "R"){
+      $("#search-results").append('<div class="card view overlay col-sm-3 hm-red-slight hm-zoom" id="' + id +
+        '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
+        id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+        firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div><a href="#"><div class="mask"></div></a></div>');
+    }
+    if (party == "I"){
+      $("#search-results").append('<div class="card view overlay col-sm-3 hm-yellow-slight hm-zoom" id="' + id +
+        '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
+        id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+        firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div><a href="#"><div class="mask"></div></a></div>');
+    }          
+
   }
-
 }
-
-function produceSen(senId){
+function produceSen(senId) {
   senList.url = senURL + senEndpoint + "/" + senId + ".json";
   $('#senmodal').modal('show');
   $("#cardlocation, #newsdisplay, #twitterArea, .twitter-timeline").empty();
   $("#recent_bills").html("<u><b>Recent Bills Sponsored:</b></u>");
   $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
   $("#follow").val(senId);
-  $.ajax(senList).done(function (response) {
-    //console.log(response);
+
+  $.ajax(senList).done(function(response) {
     senObject = response;
     $("#notcurrentlyused").html("<u><b>Basic Information:</b></u>");
     $("#sub_commitees").html("<u><b>Current Committee Memberships:</b></u><ul></ul>");
@@ -206,29 +239,28 @@ function produceSen(senId){
     $("#notcurrentlyused").append("<h6>Missed vote percentage: " + senObject.results[0].roles[0].missed_votes_pct + "%</h6>");
     $("#notcurrentlyused").append("<h6>Votes with party percentage: " + senObject.results[0].roles[0].votes_with_party_pct + "%</h6>");
 
+
     for(var i = 0; i < senObject.results[0].roles[0].committees.length; i++){
       $("#sub_commitees").append("<h6> - " + senObject.results[0].roles[0].committees[i].name +  " (" + senObject.results[0].roles[0].committees[i].code + ")</h6>");
     }
 
 
     $("#cardlocation").append('<div class="card"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
-    senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
-    senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</br>(' + party + '-' + state + ')</h4></div></div>');
+      senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+      senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</br>(' + party + '-' + state + ')</h4></div></div>');
     timesHandler.apiCall(senObject.results[0].first_name, senObject.results[0].last_name);
-    
-    if(senId == "P000603"){
+
+    if (senId == "P000603") {
       getTweets("RandPaul");
       analyzeTweets("RandPaul");
-    }
-    else if(senId == "C001075"){
+    } else if (senId == "C001075") {
       getTweets("BillCassidy");
       analyzeTweets("BillCassidy");
-    }
-
-    else{
+    } else {
       getTweets(senObject.results[0].twitter_account);
       analyzeTweets(senObject.results[0].twitter_account);
     }
+
   });
 
   senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
@@ -250,7 +282,7 @@ function produceSen(senId){
   });
 
   senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/cosponsored.json";
-  $.ajax(senList).done(function (response) {
+  $.ajax(senList).done(function(response) {
     //console.log(response);
     var senators = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
     var counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -259,37 +291,192 @@ function produceSen(senId){
     var location = 0;
 
 
-    for(var i = 0; i < response.results[0].bills.length; i++){
-      for(var j = 0; j < senators.length; j++){
-        if(senators[j] == ""){
+    for (var i = 0; i < response.results[0].bills.length; i++) {
+      for (var j = 0; j < senators.length; j++) {
+        if (senators[j] == "") {
           senators[j] = response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")";
           counter[j] = 1;
           break;
-        }
-
-        else if(senators[j] == response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")"){
+        } else if (senators[j] == response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")") {
           counter[j]++;
           break;
         }
       }
     }
 
-    for(var k = 0; k < senators.length; k++){
-      if(counter[k] > maxCount){
+    for (var k = 0; k < senators.length; k++) {
+      if (counter[k] > maxCount) {
         maxCount = counter[k];
         location = k;
       }
     }
-    if(maxCount > 1){
+    if (maxCount > 1) {
       $("#notcurrentlyused").append("<h6>Senator most cosponsored: " + senators[location] + " (" + maxCount + ")</h6>");
-    }
-    else{
+    } else {
       $("#notcurrentlyused").append("<h6>Senator most cosponsored: N/A</h6>");
     }
-    
   });
-   
+
 }
+
+//handles all firebasee account and database functions
+var accHandler = {
+  //user and database object variables
+  userDatabase: firebase.database(),
+  userArr: [],
+  uid: "",
+  //event listener for follow button leads here
+  senFollow: function() {
+    var senId = $("#follow").val();
+    console.log(senId);
+    if ($.inArray(senId, accHandler.userArr) === -1) {
+      accHandler.userDatabase.ref(accHandler.uid).push(senId);
+    } else {
+      alert('Senator Already Followed');
+    }
+  },
+  //Will be used to render the senator bios for the user page
+  buildSenList: function() {
+    accHandler.userDatabase.ref(accHandler.uid).on("value", function(snapShot) {
+      accHandler.userArr = Object.values(snapShot.val());
+      searchMethod.displayFavorites(accHandler.userArr);
+    })
+  },
+  //creates user when sign up button is pressed
+  createUser: function() {
+    var email = $("#email-signup").val().trim();
+    var password = $("#password-signup").val().trim();
+    //handles error returning
+    if (email.length < 4) {
+      $("#success-span").text('Please enter an email address.');
+      $("#close-modals").hide();
+      $("#success-modal").modal('show');
+      setTimeout(function(){
+        $("#success-modal").modal('hide');
+        $("#loginmodal").modal('show');
+      }, 1500);
+      return;
+    }
+    if (password.length < 4) {
+      $("#success-span").text('Please enter a password.');
+      $("#close-modals").hide();
+      $("#success-modal").modal('show');
+      setTimeout(function(){
+        $("#success-modal").modal('hide');
+        $("#loginmodal").modal('show');
+      }, 1500);
+      return;
+    }
+    // Sign in with email and pass.
+    // [START createwithemail]
+    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // [START_EXCLUDE]
+      if (errorCode == 'auth/weak-password') {
+        $("#success-span").text('The password is too weak.');
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
+      } else {
+        $("#success-span").text(errorMessage);
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
+      }
+      console.log(error);
+      // [END_EXCLUDE]
+    }).done;
+
+    // firebase.auth().currentUser.updateProfile({
+    //   displayName: userName
+    // });
+    console.log("test1");
+    console.log(firebase.auth().currentUser);
+    //create modal alert
+    $("#success-span").text("Account creation successful. Welcome.");
+    $("#close-modals").show();
+    $("#success-modal").modal('show');
+  },
+  //handles user sign in functionality
+  signIn: function() {
+    var email = $("#email-signin").val();
+    var password = $("#password-signin").val();
+    firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // [START_EXCLUDE]
+      if (errorCode === 'auth/wrong-password') {
+        $("#success-span").text('Wrong password.');
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
+      } else {
+        $("#success-span").text(errorMessage);
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
+      }
+      console.log(error);
+      // [END_EXCLUDE]
+    })
+    console.log(firebase.auth().currentUser);
+    //create modal alert
+    $("#success-span").text("You have successfully signed in.");
+    $("#close-modals").show();
+    $("#success-modal").modal('show');
+
+  },
+  //handles user sign out functionality
+  signOut: function() {
+    firebase.auth().signOut();
+    accHandler.uid = "";
+    accHandler.userArr = [];
+    $("#search-results").empty();
+    //create modal alert
+    $("#success-span").text("You have successfully signed out.");
+    $("#close-modals").show();
+    $("#success-modal").modal('show');
+  },
+  //handles user sign out functionality
+  initApp: function() {
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user != null){
+        accHandler.uid = user.uid;
+        if(user.displayName == null){
+          var userName = $("#username-signup").val().trim();   
+          firebase.auth().currentUser.updateProfile({
+            displayName: userName
+          });
+        }
+        $("#showfaves").show();
+        $("#openmodal").hide();
+        $("#welcome").show();
+        $("#welcome").html("Welcome " + firebase.auth().currentUser.displayName + "!");
+        $("#sign-out").show();
+      }
+      if (user == null){
+        $("#openmodal").show();
+        $("#welcome").hide();
+        $("#welcome").html(" ");
+        $("#sign-out").hide();
+        $("#showfaves").hide();
+      }      
+      accHandler.buildSenList();
+
+    });
+  }
+};
 
 // //handles all firebasee account and database functions
 // var accHandler = {
@@ -423,8 +610,9 @@ $("#states-button").on("click", function() {
 });
 
 $("#states-menu li a").on("click", function() {
-  $("#state-bar").text($(this).text())
+  $("#state-bar").text($(this).text());
   $("#state-bar").val($(this).attr("value"));
+  searchMethod.setSenId();
 });
 
 $("#search-button").on("click", function() {
@@ -434,11 +622,16 @@ $("#party-button").on("click", function() {
   searchMethod.activatePartyButton(this);
 });
 $("#party-menu li a").on("click", function() {
-  $("#party-bar").text($(this).text())
+  $("#party-bar").text($(this).text());
   $("#party-bar").val($(this).attr("value"));
+  searchMethod.setSenId();
 });
 $("#openmodal").on("click", function() {
   $('#loginmodal').modal('show');
+});
+$("#close-modals").on("click", function() {
+  $("#success-modal").modal('hide');
+  $('#loginmodal').modal('hide');
 });
 $("#showfaves").on("click", function() {
   accHandler.buildSenList();
@@ -447,15 +640,16 @@ $("#search-results").on("click", ".card", function() {
   produceSen(this.id);
 });
 
-// document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
-// document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
-// document.getElementById('sign-out').addEventListener('click', accHandler.signOut, false);
-// document.getElementById('follow').addEventListener('click', accHandler.senFollow, false);
+document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
+document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
+document.getElementById('sign-out').addEventListener('click', accHandler.signOut, false);
+document.getElementById('follow').addEventListener('click', accHandler.senFollow, false);
 $('#Signup').tab('show')
 $('#Signin').tab('show')
 window.onload = function() {
-  // accHandler.initApp();
+  accHandler.initApp();
 };
+
 
 function analyzeTweets(handle){
   $("#tweetArea").html("");
@@ -477,6 +671,7 @@ function analyzeTweets(handle){
   $.ajax({
     url: queryURL,
     method: "GET"
+
   }).done(function(response){
     //console.log(response);
 
@@ -511,6 +706,7 @@ function analyzeTweets(handle){
             mentries++;
             break;
           }
+
 
           else if(mentions[k] == response.tweets[i].entities.user_mentions[j].screen_name){
             mentCounter[k]++;
@@ -555,8 +751,9 @@ function analyzeTweets(handle){
   });
 }
 
-$(document).ready(function(){
+$(document).ready(function() {
   $("ul.tabs").tabs();
+
 
   $('#basic').click(function(){
     $("#recent_bills").css("display", "none");
@@ -633,5 +830,7 @@ window.twttr = (function(d, s, id) {
   };
 
   return t;
+
 }(document, "script", "twitter-wjs"));
+
 
