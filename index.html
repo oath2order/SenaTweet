@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<head>
-
   <title>SenaTweets</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <link rel="stylesheet" href="assets/css/reset.css" >
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IM+Fell+English:400i"> 
   <link rel="icon" href="https://amercustomconstruction.com/wp-content/uploads/2017/02/cropped-favicon.jpg" sizes="any" type="image/svg+xml">
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <!--   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.1/css/materialize.min.css"> -->
 
@@ -72,6 +71,18 @@
     <!-- /.modal-dialog -->
   </div>
   <!-- /.modal -->
+  <div class="modal fade" id="success-modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <h5 id="success-span"></h5>
+        </div>
+        <div class="modal-footer">
+          <button type class="btn btn-primary" data-dismiss="modal" id="close-modals">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <nav class="navbar navbar-expand-lg navbar-dark indigo navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
@@ -85,7 +96,7 @@
         <a class="navbar-brand" href="#" id="title">SenaTweets</a>
       </div>
       <ul class="nav navbar-nav navbar-left">
-        <li><a href="#" id="showfaves">Find My Senators</a></li>
+        <li><a href="#" id="showfaves">Senators I Follow</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a href="#" id="welcome"></a></li>
@@ -179,6 +190,7 @@
         </ul>
       </div>
       <button type="submit" class="btn btn-default" id="search-button">Submit</button>
+      <span id="input-errors"></span>
     </div>
     <div class="row" id="search-results">
     </div>

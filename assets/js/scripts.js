@@ -40,29 +40,38 @@ var searchMethod = {
 
   //there are functions added for every button for every search type we are doing
   activateNameButton: function(button) {
+    $("#first-name-bar").val("");
+    $("#last-name-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
     $("#states").hide();
     $("#party").hide();
     $("#first-name").show();
     $("#last-name").show();
+    $("#search-button").show();
   },
 
   activateStatesButton: function(button) {
+    $("#state-bar").text("States");
+    $("#state-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
     $("#first-name").hide();
     $("#last-name").hide();
     $("#party").hide();
+    $("#search-button").hide();
     $("#states").show();
   },
 
   activatePartyButton: function(button) {
+    $("#party-bar").text("Party");
+    $("#party-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
     $("#first-name").hide();
     $("#last-name").hide();
     $("#states").hide();
+    $("#search-button").hide();
     $("#party").show();
   },
 
@@ -80,6 +89,7 @@ var searchMethod = {
   //these are the functions for our search types, the search by name function ended up being huge;
 
   searchByName: function() {
+    $("#input-errors").text("");
     this.firstName = this.inputValidation($("#first-name-bar").val().trim());
     this.lastName = this.inputValidation($("#last-name-bar").val().trim());
     senList.url = senURL + "115/Senate/members.json";
@@ -94,6 +104,9 @@ var searchMethod = {
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
+        if (searchMethod.senIdArr.length == 0){
+          $("#input-errors").text("Your search did not yield any results.");
+        }
       } else if (searchMethod.lastName !== undefined && searchMethod.firstName == undefined) {
         $.each(senMem, function(i) {
           if (senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
@@ -103,6 +116,9 @@ var searchMethod = {
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
+        if (searchMethod.senIdArr.length == 0){
+          $("#input-errors").text("Your search did not yield any results.");
+        }
       } else if (searchMethod.firstName !== undefined && searchMethod.lastName !== undefined) {
         $.each(senMem, function(i) {
           if (senMem[i].first_name.toLowerCase() == searchMethod.firstName.toLowerCase() && senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
@@ -112,8 +128,11 @@ var searchMethod = {
             searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
           }
         });
+        if (searchMethod.senIdArr.length == 0){
+          $("#input-errors").text("Your search did not yield any results.");
+        }
       } else if (searchMethod.firstName == undefined && searchMethod.lastName == undefined) {
-        console.log("your field is either empty or invalid, please try again");
+        $("#input-errors").text("Your field is either empty or invalid, please try again.");
       }
     });
   },
@@ -121,35 +140,27 @@ var searchMethod = {
     this.state = $("#state-bar").val();
     console.log(this.state);
     senList.url = senURL + "members/senate/" + this.state + "/current.json";
-    if (this.state !== "") {
-      $.ajax(senList).done(function(response) {
-        var senMem = response.results;
-        $.each(senMem, function(i) {
-          searchMethod.senIdArr.push(senMem[i].id);
-          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, searchMethod.state, senMem[i].id);
-        });
+    $.ajax(senList).done(function(response) {
+      var senMem = response.results;
+      $.each(senMem, function(i) {
+        searchMethod.senIdArr.push(senMem[i].id);
+        searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, searchMethod.state, senMem[i].id);
       });
-    } else {
-      console.log("specify a state first");
-    }
+    });
   },
   searchByParty: function() {
     this.party = $("#party-bar").val();
     console.log(this.party);
     senList.url = senURL + "115/Senate/members.json";
-    if (this.party !== "") {
-      $.ajax(senList).done(function(response) {
-        var senMem = response.results[0].members;
-        $.each(senMem, function(i) {
-          if (senMem[i].party == searchMethod.party) {
-            searchMethod.senIdArr.push(senMem[i].id);
-            searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
-          }
-        });
+    $.ajax(senList).done(function(response) {
+      var senMem = response.results[0].members;
+      $.each(senMem, function(i) {
+        if (senMem[i].party == searchMethod.party) {
+          searchMethod.senIdArr.push(senMem[i].id);
+          searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
+        }
       });
-    } else {
-      console.log("specify a party first");
-    }
+    });
   },
   displayFavorites: function(senArr) {
     $("#search-results").empty();
@@ -328,11 +339,23 @@ var accHandler = {
     var password = $("#password-signup").val().trim();
     //handles error returning
     if (email.length < 4) {
-      alert('Please enter an email address.');
+      $("#success-span").text('Please enter an email address.');
+      $("#close-modals").hide();
+      $("#success-modal").modal('show');
+      setTimeout(function(){
+        $("#success-modal").modal('hide');
+        $("#loginmodal").modal('show');
+      }, 1500);
       return;
     }
     if (password.length < 4) {
-      alert('Please enter a password.');
+      $("#success-span").text('Please enter a password.');
+      $("#close-modals").hide();
+      $("#success-modal").modal('show');
+      setTimeout(function(){
+        $("#success-modal").modal('hide');
+        $("#loginmodal").modal('show');
+      }, 1500);
       return;
     }
     // Sign in with email and pass.
@@ -343,9 +366,19 @@ var accHandler = {
       var errorMessage = error.message;
       // [START_EXCLUDE]
       if (errorCode == 'auth/weak-password') {
-        alert('The password is too weak.');
+        $("#success-span").text('The password is too weak.');
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
       } else {
-        alert(errorMessage);
+        $("#success-span").text(errorMessage);
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
       }
       console.log(error);
       // [END_EXCLUDE]
@@ -356,6 +389,10 @@ var accHandler = {
     // });
     console.log("test1");
     console.log(firebase.auth().currentUser);
+    //create modal alert
+    $("#success-span").text("Account creation successful. Welcome.");
+    $("#close-modals").show();
+    $("#success-modal").modal('show');
   },
   //handles user sign in functionality
   signIn: function() {
@@ -367,13 +404,29 @@ var accHandler = {
       var errorMessage = error.message;
       // [START_EXCLUDE]
       if (errorCode === 'auth/wrong-password') {
-        alert('Wrong password.');
+        $("#success-span").text('Wrong password.');
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
       } else {
-        alert(errorMessage);
+        $("#success-span").text(errorMessage);
+        $("#close-modals").hide();
+        $("#success-modal").modal('show');
+        setTimeout(function(){
+          $("#success-modal").modal('hide');
+        }, 1500);
       }
       console.log(error);
       // [END_EXCLUDE]
     })
+    console.log(firebase.auth().currentUser);
+    //create modal alert
+    $("#success-span").text("You have successfully signed in.");
+    $("#close-modals").show();
+    $("#success-modal").modal('show');
+
   },
   //handles user sign out functionality
   signOut: function() {
@@ -381,6 +434,10 @@ var accHandler = {
     accHandler.uid = "";
     accHandler.userArr = [];
     $("#search-results").empty();
+    //create modal alert
+    $("#success-span").text("You have successfully signed out.");
+    $("#close-modals").show();
+    $("#success-modal").modal('show');
   },
   //handles user sign out functionality
   initApp: function() {
@@ -393,6 +450,7 @@ var accHandler = {
             displayName: userName
           });
         }
+        $("#showfaves").show();
         $("#openmodal").hide();
         $("#welcome").show();
         $("#welcome").html("Welcome " + firebase.auth().currentUser.displayName + "!");
@@ -403,8 +461,10 @@ var accHandler = {
         $("#welcome").hide();
         $("#welcome").html(" ");
         $("#sign-out").hide();
+        $("#showfaves").hide();
       }      
       accHandler.buildSenList();
+
     });
   }
 };
@@ -452,8 +512,9 @@ $("#states-button").on("click", function() {
 });
 
 $("#states-menu li a").on("click", function() {
-  $("#state-bar").text($(this).text())
+  $("#state-bar").text($(this).text());
   $("#state-bar").val($(this).attr("value"));
+  searchMethod.setSenId();
 });
 
 $("#search-button").on("click", function() {
@@ -463,11 +524,16 @@ $("#party-button").on("click", function() {
   searchMethod.activatePartyButton(this);
 });
 $("#party-menu li a").on("click", function() {
-  $("#party-bar").text($(this).text())
+  $("#party-bar").text($(this).text());
   $("#party-bar").val($(this).attr("value"));
+  searchMethod.setSenId();
 });
 $("#openmodal").on("click", function() {
   $('#loginmodal').modal('show');
+});
+$("#close-modals").on("click", function() {
+  $("#success-modal").modal('hide');
+  $('#loginmodal').modal('hide');
 });
 $("#showfaves").on("click", function() {
   accHandler.buildSenList();
