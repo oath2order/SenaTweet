@@ -147,7 +147,7 @@ var searchMethod = {
           }
         });
       });
-    } else{
+    } else {
       console.log("specify a party first");
     }
   },
@@ -178,21 +178,33 @@ var searchMethod = {
     }
   },
   renderSearch: function(firstname, lastname, party, state, id) {
-    $("#search-results").append('<div class="card col-sm-3" id="' + id +
-      '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
-      id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
-      firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div></div>')
+    if (party == "D"){
+      $("#search-results").append('<div class="card view overlay col-sm-3 hm-blue-slight hm-zoom" id="' + id +
+        '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
+        id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+        firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div><a href="#"><div class="mask"></div></a></div>');
+    }
+    if (party == "R"){
+      $("#search-results").append('<div class="card view overlay col-sm-3 hm-red-slight hm-zoom" id="' + id +
+        '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
+        id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+        firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div><a href="#"><div class="mask"></div></a></div>');
+    }
+    if (party == "I"){
+      $("#search-results").append('<div class="card view overlay col-sm-3 hm-yellow-slight hm-zoom" id="' + id +
+        '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
+        id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+        firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div><a href="#"><div class="mask"></div></a></div>');
+    }          
   }
-
 }
-
-function produceSen(senId){
+function produceSen(senId) {
   senList.url = senURL + senEndpoint + "/" + senId + ".json";
   $('#senmodal').modal('show');
   $("#cardlocation").empty();
   $("#newsdisplay").empty();
   $("#follow").val(senId);
-  $.ajax(senList).done(function (response) {
+  $.ajax(senList).done(function(response) {
     senObject = response;
     $("#notcurrentlyused").html("<u><b>Basic Information:</b></u>");
     $("#sub_commitees").html("<u><b>Current Committee Memberships:</b></u><ul></ul>");
@@ -207,55 +219,51 @@ function produceSen(senId){
     $("#notcurrentlyused").append("<h6>Missed vote percentage: " + senObject.results[0].roles[0].missed_votes_pct + "%</h6>");
     $("#notcurrentlyused").append("<h6>Votes with party percentage: " + senObject.results[0].roles[0].votes_with_party_pct + "%</h6>");
 
-    
-    for(var i = 0; i < senObject.results[0].roles[0].committees.length; i++){
-      $("#sub_commitees").append("<li>" + senObject.results[0].roles[0].committees[i].name +  " (" + senObject.results[0].roles[0].committees[i].code + ")</li>");
+
+    for (var i = 0; i < senObject.results[0].roles[0].committees.length; i++) {
+      $("#sub_commitees").append("<li>" + senObject.results[0].roles[0].committees[i].name + " (" + senObject.results[0].roles[0].committees[i].code + ")</li>");
     }
 
 
     $("#cardlocation").append('<div class="card"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
-    senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' + 
-    senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</br>(' + party + '-' + state + ')</h4></div></div>');
+      senObject.results[0].member_id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
+      senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</br>(' + party + '-' + state + ')</h4></div></div>');
     timesHandler.apiCall(senObject.results[0].first_name, senObject.results[0].last_name);
-    
-    if(senId == "P000603"){
+
+    if (senId == "P000603") {
       getTweets("RandPaul");
       analyzeTweets("RandPaul");
-    }
-    else if(senId == "C001075"){
+    } else if (senId == "C001075") {
       getTweets("BillCassidy");
       analyzeTweets("BillCassidy");
-    }
-
-    else{
+    } else {
       getTweets(senObject.results[0].twitter_account);
       analyzeTweets(senObject.results[0].twitter_account);
     }
 
-   
+
   });
 
   senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/introduced.json";
-  $.ajax(senList).done(function (response) {
+  $.ajax(senList).done(function(response) {
     $("#recent_bills").html("<u><b>Recent Bills:</b></u>");
     $("#resolutions").html("<u><b>Further Resolutions:</b></u>");
     //console.log(response);
-    for(var i = 0; i < response.results[0].bills.length; i++){
+    for (var i = 0; i < response.results[0].bills.length; i++) {
       var link = response.results[0].bills[i].govtrack_url;
       var ID = "href" + i;
-      if(response.results[0].bills[i].bill_type == "s"){
-        $("#recent_bills").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+      if (response.results[0].bills[i].bill_type == "s") {
+        $("#recent_bills").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title + "</a> (" + response.results[0].bills[i].number + ")</li>");
         $("#" + ID).attr('href', link);
-      }
-      else{
-        $("#resolutions").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title +  "</a> (" + response.results[0].bills[i].number + ")</li>");
+      } else {
+        $("#resolutions").append("<li><a id=" + ID + ">" + response.results[0].bills[i].title + "</a> (" + response.results[0].bills[i].number + ")</li>");
         $("#" + ID).attr('href', link);
       }
     }
   });
 
   senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/cosponsored.json";
-  $.ajax(senList).done(function (response) {
+  $.ajax(senList).done(function(response) {
     //console.log(response);
     var senators = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
     var counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -264,33 +272,30 @@ function produceSen(senId){
     var location = 0;
 
 
-    for(var i = 0; i < response.results[0].bills.length; i++){
-      for(var j = 0; j < senators.length; j++){
-        if(senators[j] == ""){
+    for (var i = 0; i < response.results[0].bills.length; i++) {
+      for (var j = 0; j < senators.length; j++) {
+        if (senators[j] == "") {
           senators[j] = response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")";
           counter[j] = 1;
           break;
-        }
-
-        else if(senators[j] == response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")"){
+        } else if (senators[j] == response.results[0].bills[i].sponsor_name + " (" + response.results[0].bills[i].sponsor_party + "-" + response.results[0].bills[i].sponsor_state + ")") {
           counter[j]++;
           break;
         }
       }
     }
 
-    for(var k = 0; k < senators.length; k++){
-      if(counter[k] > maxCount){
+    for (var k = 0; k < senators.length; k++) {
+      if (counter[k] > maxCount) {
         maxCount = counter[k];
         location = k;
       }
     }
-    if(maxCount > 1){
+    if (maxCount > 1) {
       $("#notcurrentlyused").append("<h6>Senator most cosponsored: " + senators[location] + " (" + maxCount + ")</h6>");
-    }
-    else{
+    } else {
       $("#notcurrentlyused").append("<h6>Senator most cosponsored: N/A</h6>");
-    } 
+    }
   });
 }
 
@@ -319,8 +324,8 @@ var accHandler = {
   },
   //creates user when sign up button is pressed
   createUser: function() {
-    var email = $("#email-signup").val();
-    var password = $("#password-signup").val();
+    var email = $("#email-signup").val().trim();
+    var password = $("#password-signup").val().trim();
     //handles error returning
     if (email.length < 4) {
       alert('Please enter an email address.');
@@ -344,8 +349,12 @@ var accHandler = {
       }
       console.log(error);
       // [END_EXCLUDE]
-    });
-    // [END createwithemail]
+    }).done;
+
+    // firebase.auth().currentUser.updateProfile({
+    //   displayName: userName
+    // });
+    console.log("test1");
     console.log(firebase.auth().currentUser);
   },
   //handles user sign in functionality
@@ -365,7 +374,6 @@ var accHandler = {
       console.log(error);
       // [END_EXCLUDE]
     })
-    console.log(firebase.auth().currentUser);
   },
   //handles user sign out functionality
   signOut: function() {
@@ -377,7 +385,25 @@ var accHandler = {
   //handles user sign out functionality
   initApp: function() {
     firebase.auth().onAuthStateChanged(function(user) {
-      accHandler.uid = user.uid;
+      if (user != null){
+        accHandler.uid = user.uid;
+        if(user.displayName == null){
+          var userName = $("#username-signup").val().trim();   
+          firebase.auth().currentUser.updateProfile({
+            displayName: userName
+          });
+        }
+        $("#openmodal").hide();
+        $("#welcome").show();
+        $("#welcome").html("Welcome " + firebase.auth().currentUser.displayName + "!");
+        $("#sign-out").show();
+      }
+      if (user == null){
+        $("#openmodal").show();
+        $("#welcome").hide();
+        $("#welcome").html(" ");
+        $("#sign-out").hide();
+      }      
       accHandler.buildSenList();
     });
   }
@@ -450,17 +476,17 @@ $("#search-results").on("click", ".card", function() {
   produceSen(this.id);
   $("#twitterArea").html(""); // clears twitter area, or it will continually append tweets
 });
-// document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
-// document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
-// document.getElementById('sign-out').addEventListener('click', accHandler.signOut, false);
-// document.getElementById('follow').addEventListener('click', accHandler.senFollow, false);
+document.getElementById('sign-up').addEventListener('click', accHandler.createUser, false);
+document.getElementById('sign-in').addEventListener('click', accHandler.signIn, false);
+document.getElementById('sign-out').addEventListener('click', accHandler.signOut, false);
+document.getElementById('follow').addEventListener('click', accHandler.senFollow, false);
 $('#Signup').tab('show')
 $('#Signin').tab('show')
 window.onload = function() {
-  // accHandler.initApp();
+  accHandler.initApp();
 };
 
-function analyzeTweets(handle){
+function analyzeTweets(handle) {
   var hashtags = [];
   var mentions = [];
   var queryURL = "https://shrouded-dawn-80649.herokuapp.com/" + "?q=" + handle;
@@ -468,32 +494,32 @@ function analyzeTweets(handle){
   $.ajax({
     url: queryURL,
     method: "GET"
-  }).done(function(response){
+  }).done(function(response) {
     console.log(response);
 
-    for(var i = 0; i < response.tweets.length; i++){ 
-      if(response.tweets[i].entities.hashtags.length != 0){
-        for(var j = 0; j < response.tweets[i].entities.hashtags.length; j++){
+    for (var i = 0; i < response.tweets.length; i++) {
+      if (response.tweets[i].entities.hashtags.length != 0) {
+        for (var j = 0; j < response.tweets[i].entities.hashtags.length; j++) {
           hashtags = response.tweets[i].entities.hashtags[j];
         }
       }
 
-      if(response.tweets[i].entities.user_mentions.length != 0){
-        for(var j = 0; j < response.tweets[i].entities.user_mentions.length; j++){
+      if (response.tweets[i].entities.user_mentions.length != 0) {
+        for (var j = 0; j < response.tweets[i].entities.user_mentions.length; j++) {
           mentions = response.tweets[i].entities.user_mentions[j];
           console.log(mentions);
         }
       }
     }
-  
-  $("#tweetsArea").prepend("<p># of hashtags this week: " + hashtags + " # of mentions this week: " +  mentions + "</p><br>");
+
+    $("#tweetsArea").prepend("<p># of hashtags this week: " + hashtags + " # of mentions this week: " + mentions + "</p><br>");
   });
 }
 
-$(document).ready(function(){
+$(document).ready(function() {
   $("ul.tabs").tabs();
 
-  if($('ul.tabs#basic').tabs('select_tab', '#notcurrentlyused')){
+  if ($('ul.tabs#basic').tabs('select_tab', '#notcurrentlyused')) {
     $("#notcurrentlyused").attr("visibility", "visible");
   };
   $('ul.tabs#bills').tabs('select_tab', '#recent_bills');
@@ -501,8 +527,8 @@ $(document).ready(function(){
   $('ul.tabs#other').tabs('select_tab', '#newsdisplay');
 });
 
-function getTweets(handle){
-  twttr.widgets.createTimeline({sourceType: "profile", screenName: handle}, document.getElementById('twitterArea'),{tweetLimit: 5});
+function getTweets(handle) {
+  twttr.widgets.createTimeline({ sourceType: "profile", screenName: handle }, document.getElementById('twitterArea'), { tweetLimit: 5 });
 };
 
 window.twttr = (function(d, s, id) {

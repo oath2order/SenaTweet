@@ -81,11 +81,17 @@ li {
   margin: 0 0 0 15%;
 }
 
-.navbar-right{
+/*.navbar-right{
   position: relative;
   right: 0%;
-}
+}*/
 
 body > nav{
   height: 85px;
+}
+#welcome{
+  display: none;
+}
+#sign-out{
+  display: none;
 }
