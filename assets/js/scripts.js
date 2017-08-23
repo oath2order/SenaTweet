@@ -10,6 +10,7 @@ var senList = {
     "x-api-key": "mayRUHtP2kt3W1WNxLvumC4K1LJyC89q9PDbKwQl"
   }
 }
+// ^ dont need to repeat both of these if the only thing that changes is the endpoint
 //object to hold senator data
 senObject = {};
 
@@ -28,6 +29,7 @@ var searchMethod = {
   },
 
   //this is what we'll need to use for our populate function outside of the search function, these are eventually what get passed into the members API; Josh, hopefully this is what you're looking for
+  // its good to have comments, but maybe not that detailed of comments..
   senIdArr: [],
 
   firstName: "",
@@ -41,6 +43,7 @@ var searchMethod = {
   //there are functions added for every button for every search type we are doing
   activateNameButton: function(button) {
     $("#first-name-bar").val("");
+    // use jquery trigger reset button on the whole form
     $("#last-name-bar").val("");
     $("button").removeClass("active");
     $(button).addClass("active");
@@ -76,12 +79,14 @@ var searchMethod = {
   },
 
   //function for input validation, kept separate so that it can be called when needed, I'm using console logs in place of actual alerts for now just to test functionality, someone PLEASE replace them with modals like they're supposed to be (see below)
-  inputValidation: function(input) {  
+  inputValidation: function(input) {
     if (input !== "") {
       if (/^[a-zA-Z]+/.test(input)) {
+        // is this enough validation?
         return input;
       } else {
         console.log("invalid");
+        // how can we handle this more gracfully and display a message to the user?
       }
     }
   },
@@ -89,6 +94,9 @@ var searchMethod = {
   //these are the functions for our search types, the search by name function ended up being huge;
 
   searchByName: function() {
+    // this is a wild beast of a function
+    // we need to break this up into smaller functions
+    // should not have multiple levels of conditionals here
     $("#input-errors").text("");
     this.firstName = this.inputValidation($("#first-name-bar").val().trim());
     this.lastName = this.inputValidation($("#last-name-bar").val().trim());
@@ -108,6 +116,9 @@ var searchMethod = {
           $("#input-errors").text("Your search did not yield any results.");
         }
       } else if (searchMethod.lastName !== undefined && searchMethod.firstName == undefined) {
+        // each of these else ifs basically just do the same thing,
+        // good opportunity to move whats inside the conditional into its own function with an
+        // argument to vary based on last name / first name not being there
         $.each(senMem, function(i) {
           if (senMem[i].last_name.toLowerCase() == searchMethod.lastName.toLowerCase()) {
             searchMethod.senIdArr.push(senMem[i].id);
@@ -139,6 +150,7 @@ var searchMethod = {
   searchByState: function() {
     this.state = $("#state-bar").val();
     console.log(this.state);
+    // don't add console logs into source control
     this.senList.url = this.senURL + "members/senate/" + this.state + "/current.json";
     if(this.state !== "States"){
       $.ajax(this.senList).done(function(response) {
@@ -160,6 +172,8 @@ var searchMethod = {
     $.ajax(this.senList).done(function(response) {
       var senMem = response.results[0].members;
       $.each(senMem, function(i) {
+        // you might want to save senMem[i] to var at each loop
+        // so the next few lines look cleaner
         if (senMem[i].party == searchMethod.party) {
           searchMethod.senIdArr.push(senMem[i].id);
           searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
@@ -178,7 +192,7 @@ var searchMethod = {
           searchMethod.renderSearch(senMem[i].first_name, senMem[i].last_name, senMem[i].party, senMem[i].state, senMem[i].id);
         }
       });
-    });    
+    });
 
   },
   //this will determine what kind of endpoint we're using and based on that will populate senIdArr with all the IDs of all the senators it finds that match the search criteria
@@ -194,6 +208,17 @@ var searchMethod = {
     }
   },
   renderSearch: function(firstname, lastname, party, state, id) {
+    // lets rewrite this..
+    //
+    // var colors = {
+    //   "D": "hm-blue",
+    //   "R": "hm"red-slight",
+    //   "I": "hm-yellow-slight"
+    // };
+    //
+    // $("#search-results").append('<div class="card view overlay col-sm-3' + colors[party] + 'hm-blue-slight hm-zoom" id="' + id +
+    //
+    // and .. no more conditional
     if (party == "D"){
       $("#search-results").append('<div class="card view overlay col-sm-3 hm-blue-slight hm-zoom" id="' + id +
         '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
@@ -211,7 +236,7 @@ var searchMethod = {
         '"><img class="img-fluid img-responsive" src="assets/images/senpics/' +
         id + '.jpg" alt="Card image cap"><div class="card-body"><h4 class="card-title">' +
         firstname + ' ' + lastname + '</br>(' + party + '-' + state + ')</h4></div><a href="#"><div class="mask"></div></a></div>');
-    }          
+    }
 
   }
 }
@@ -227,6 +252,12 @@ function produceSen(senId) {
     senObject = response;
     $("#notcurrentlyused").html("<u><b>Basic Information:</b></u>");
     $("#sub_commitees").html("<u><b>Current Committee Memberships:</b></u><ul></ul>");
+    // you could have a function for this like
+    // function hSixFactory(text) {
+    //   var h6 = document.createElement('h6');
+    //   h6.innerHTML = text;
+    //   return h6;
+    // }
     $("#notcurrentlyused").append("<h6>Full title and rank: " + senObject.results[0].roles[0].title + " (" + senObject.results[0].roles[0].state_rank + ")</h6>");
     $("#notcurrentlyused").append("<h6>Date of birth: " + senObject.results[0].date_of_birth + "</h6>");
     $("#notcurrentlyused").append("<h6>Current term end date: " + senObject.results[0].roles[0].end_date + "</h6>");
@@ -250,6 +281,7 @@ function produceSen(senId) {
       senObject.results[0].first_name + ' ' + senObject.results[0].last_name + '</br>(' + senObject.results[0].party + '-' + senObject.results[0].state + ')</h4></div></div>');
     timesHandler.apiCall(senObject.results[0].first_name, senObject.results[0].last_name);
 
+    // what is this? Why are we hard coding ids in here?
     if (senId == "P000603") {
       getTweets("RandPaul");
       analyzeTweets("RandPaul");
@@ -284,6 +316,7 @@ function produceSen(senId) {
   senList.url = "https://api.propublica.org/congress/v1/members/" + senId + "/bills/cosponsored.json";
   $.ajax(senList).done(function(response) {
     //console.log(response);
+    // should have a comment here on what this is doing
     var senators = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];
     var counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     var topSenator = "";
@@ -375,6 +408,14 @@ var accHandler = {
       var errorMessage = error.message;
       // [START_EXCLUDE]
       if (errorCode == 'auth/weak-password') {
+        // this could be its own function
+        // for example
+        // function showUserMessage(text) {
+             // $("#close-modals").hide();
+             // $("#success-modal").modal('show');
+        // }
+        // then reuse it in other locations
+        //
         $("#success-span").text('The password is too weak.');
         $("#close-modals").hide();
         $("#success-modal").modal('show');
@@ -438,6 +479,12 @@ var accHandler = {
 
   },
   //handles user sign out functionality
+  // so when you have object properties like this so close togehter, another (often cleaner)
+  // way of writing is to create an object var obj = {};
+  // and then
+  // obj.signOut = function() { };
+  // that way it will get compiled to the same thing, just spaced out more
+  // that isn't an issue for most production code, because you can minify / remove white space
   signOut: function() {
     firebase.auth().signOut();
     accHandler.uid = "";
@@ -454,7 +501,7 @@ var accHandler = {
       if (user != null){
         accHandler.uid = user.uid;
         if(user.displayName == null){
-          var userName = $("#username-signup").val().trim();   
+          var userName = $("#username-signup").val().trim();
           firebase.auth().currentUser.updateProfile({
             displayName: userName
           });
@@ -471,7 +518,7 @@ var accHandler = {
         $("#welcome").html(" ");
         $("#sign-out").hide();
         $("#showfaves").hide();
-      }      
+      }
       accHandler.buildSenList();
     });
   }
@@ -500,7 +547,7 @@ var timesHandler = {
     $("#newsdisplay").empty();
     for (var i = 0; i < 5; i++) {
       //console.log(list[i])
-      $("#newsdisplay").append("<a href='" + list[i].web_url + "' target='_blank'><h4 class='headline'>" 
+      $("#newsdisplay").append("<a href='" + list[i].web_url + "' target='_blank'><h4 class='headline'>"
       + list[i].headline.main + "</h4></a><p class='snippet'><q>" + list[i].snippet + "</q></p>")
     }
   }
@@ -560,7 +607,7 @@ window.onload = function() {
 
 
 function analyzeTweets(handle){
-  $("#tweetArea").html("");
+  $("#tweetArea").html(""); // use jquery .empty function
   var hashtags = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];;
   var mentions = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""];;
   var hashCounter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -571,10 +618,12 @@ function analyzeTweets(handle){
   var mentries = 0;
   var hashes = 0;
   var signs = 0;
-  
+
   var locHash = 0;
   var locMent = 0;
   var queryURL = "https://shrouded-dawn-80649.herokuapp.com/" + "?q=" + handle;
+  // should use a conditional for queryUrl for localhost`
+  // queryURL = window.env == 'production' ? 'real_url':'localhost:url';
 
   $.ajax({
     url: queryURL,
